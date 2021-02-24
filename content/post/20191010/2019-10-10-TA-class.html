@@ -1,0 +1,931 @@
+---
+title: "統計學與實習"
+author: "Hochia"
+output: 
+  html_document:
+    toc: true
+    toc_float: true
+    toc_depth: 3
+date: 2019-10-10T21:13:14-05:00
+categories: ["R"]
+tags: ["R Markdown", "plot", "regression"]
+---
+
+
+
+<div id="ta-class" class="section level1">
+<h1>TA class</h1>
+<div id="new-project" class="section level2">
+<h2>New Project</h2>
+<p>File &gt; New Project..</p>
+<center>
+<div class="figure">
+<img src="fig_00.PNG" alt="New Project" />
+<p class="caption">New Project</p>
+</div>
+</center>
+<p>Set the directory name and the subdirectory.</p>
+</div>
+<div id="r-markdown" class="section level2">
+<h2>R Markdown</h2>
+<p>You can write the report with RMarkdown. It can generate HTML, PDF, Word, and PPT documents. Furthermore, math equations can be write with LaTex format.</p>
+<blockquote>
+<p>Find the cheet sheet from <em>Help &gt; Cheetsheets &gt; R Markdown Cheet Sheet</em></p>
+</blockquote>
+<p>Create your R Markdown!</p>
+<center>
+<div class="figure">
+<img src="fig_01.PNG" alt="R Markdown" />
+<p class="caption">R Markdown</p>
+</div>
+</center>
+<p>Add the title and author name.</p>
+<center>
+<div class="figure">
+<img src="fig_02.PNG" alt="Setup" />
+<p class="caption">Setup</p>
+</div>
+</center>
+<p>Kick the “Knit” button.</p>
+<center>
+<div class="figure">
+<img src="fig_03.PNG" alt="Knit" />
+<p class="caption">Knit</p>
+</div>
+</center>
+<p>Then you will see the following example.</p>
+<div id="r-markdown-1" class="section level3">
+<h3>R Markdown</h3>
+<p>This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <a href="http://rmarkdown.rstudio.com" class="uri">http://rmarkdown.rstudio.com</a>.</p>
+<p>When you click the <strong>Knit</strong> button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:</p>
+<pre class="r"><code>summary(cars)
+#&gt;      speed           dist       
+#&gt;  Min.   : 4.0   Min.   :  2.00  
+#&gt;  1st Qu.:12.0   1st Qu.: 26.00  
+#&gt;  Median :15.0   Median : 36.00  
+#&gt;  Mean   :15.4   Mean   : 42.98  
+#&gt;  3rd Qu.:19.0   3rd Qu.: 56.00  
+#&gt;  Max.   :25.0   Max.   :120.00</code></pre>
+</div>
+<div id="including-plots" class="section level3">
+<h3>Including Plots</h3>
+<p>You can also embed plots, for example:</p>
+<p><img src="/post/20191010/2019-10-10-TA-class_files/figure-html/pressure-1.png" width="672" /></p>
+<p>Note that the <code>echo = FALSE</code> parameter was added to the code chunk to prevent printing of the R code that generated the plot.</p>
+</div>
+</div>
+<div id="r-code-chunks" class="section level2">
+<h2>R Code Chunks</h2>
+<p>shortcut</p>
+<p><code>Ctrl + Alt + I</code> on Windows</p>
+<p><code>Cmd + Option + I</code> on macOS</p>
+<p>Add your R code in code chunk, then R Markdown will run it.</p>
+<pre><code>```{r}
+summary(cars)
+```</code></pre>
+<p>This is what you see in the document.</p>
+<pre class="r"><code>summary(cars)
+#&gt;      speed           dist       
+#&gt;  Min.   : 4.0   Min.   :  2.00  
+#&gt;  1st Qu.:12.0   1st Qu.: 26.00  
+#&gt;  Median :15.0   Median : 36.00  
+#&gt;  Mean   :15.4   Mean   : 42.98  
+#&gt;  3rd Qu.:19.0   3rd Qu.: 56.00  
+#&gt;  Max.   :25.0   Max.   :120.00</code></pre>
+<p>You can embed the variable in the document.</p>
+<pre><code>```{r}
+x = 5  # radius of a circle
+```</code></pre>
+<pre><code>For a circle with the radius `r x`,
+its area is `r pi * x^2`.</code></pre>
+<p>Then you will see this.</p>
+<pre class="r"><code>x = 5  # radius of a circle</code></pre>
+<p>For a circle with the radius 5,
+its area is 78.5398163.</p>
+</div>
+<div id="latex" class="section level2">
+<h2>LaTex</h2>
+<p>Use <code>$</code> to add math equations in the paragraph.</p>
+<p><code>the acceptance rate in $95\%$ confidence</code></p>
+<p>the acceptance rate in <span class="math inline">\(95\%\)</span> confidence</p>
+<p>Use <code>$$</code> to add math equations in single or multiple lines.</p>
+<pre><code>$$
+f_X(x) = {x-1 \choose r-1} p^r (1-p)^{x-r} I_{(r,r+1, \dots)} (x)
+$$</code></pre>
+<p><span class="math display">\[
+f_X(x) = {x-1 \choose r-1} p^r (1-p)^{x-r} I_{(r,r+1, \dots)} (x)
+\]</span></p>
+<pre><code>$$
+\begin{aligned}
+f_X(x) = {x-1 \choose r-1} p^r (1-p)^{x-r} I_{(r,r+1, \dots)} (x)
+f_X(x) = {x-1 \choose r-1} p^r (1-p)^{x-r} I_{(r,r+1, \dots)} (x)
+\end{aligned}
+$$</code></pre>
+<p><span class="math display">\[
+\begin{aligned}
+f_X(x) = {x-1 \choose r-1} p^r (1-p)^{x-r} I_{(r,r+1, \dots)} (x)\\
+f_X(x) = {x-1 \choose r-1} p^r (1-p)^{x-r} I_{(r,r+1, \dots)} (x)
+\end{aligned}
+\]</span></p>
+<p>For more information, see <a href="https://latex.wikia.org/wiki/List_of_LaTeX_symbols">Latex</a> in Wiki.</p>
+</div>
+<div id="包package" class="section level2">
+<h2>包(Package)</h2>
+<blockquote>
+<ol class="example" style="list-style-type: decimal">
+<li>為何要用其他的包，base R 不是也有嗎?比如畫圖，R base 有 <code>plot()</code>、<code>boxplot()</code> 等。為何要用 <code>ggplot2()</code>?</li>
+</ol>
+</blockquote>
+<p>為了彌補之前的漏洞，如果輕易的更動 base，
+會癱瘓過去做過的成品。為了避免類似的狀況，所以開發新的方法。</p>
+<p>包會整合容易混淆的作法，更一致的表達如何操作。</p>
+<p>可是這樣講還是很模糊，要講清楚變成講古。總之我們已經沒必要追究過去怎麼做，只需要與時俱進，學習最新的方法即可。</p>
+<blockquote>
+<ol start="2" class="example" style="list-style-type: decimal">
+<li>為何選 <code>tidyverse</code>?</li>
+</ol>
+</blockquote>
+<p>在呼叫 <code>tidyverse</code> 的時候會看到下面的資訊:</p>
+<pre class="r"><code>library(tidyverse)</code></pre>
+<p><code>tidyverse</code> 整合 <code>ggplot2</code>, <code>purrr</code>, <code>tibble</code>, <code>dplyr</code>, <code>tidyr</code>, <code>stringr</code>, <code>readr</code>, <code>forcats</code>，海羅了處理資料的基本方法。</p>
+<p>今天進一步介紹 <code>dplyr</code> ，還有開始使用 <code>ggplot2</code>。</p>
+<blockquote>
+<ol start="3" class="example" style="list-style-type: decimal">
+<li>為何寫成 <code>ggplot2::mpg</code>?兩個冒號<code>::</code>是什麼?</li>
+</ol>
+</blockquote>
+<p>告訴大家 <code>mpg</code> 是在 <code>ggplot2</code> 包。同理，<code>dplyr::select()</code> 告訴大家 <code>select()</code> 在 <code>dplyr</code> 包。暫時可以把 <code>::</code> 當作一種方法，代表取包裡的東西。當然你不能寫成 <code>ggplot2$mpg</code>，因為 <code>$</code> 是取資料的變數，比如 <code>mpg$cty</code>，是另外一種方法。</p>
+<blockquote>
+<ol start="4" class="example" style="list-style-type: decimal">
+<li>有推薦其他寫程式的好方法嗎?</li>
+</ol>
+</blockquote>
+<p>有，複製別人寫好的，貼上運行。因為我們要站在巨人的肩膀上。</p>
+</div>
+<div id="dplyr-資料轉換-ggplot2-資料視覺化" class="section level2">
+<h2><code>dplyr</code> 資料轉換 &amp; <code>ggplot2</code> 資料視覺化</h2>
+<p>資料轉換和資料視覺化的內容很豐富，所以會在未來的課程不斷的加入新的內容，持續堆疊下去。如果有不熟悉的地方，也許可以考慮複習一下先前教過的內容。</p>
+</div>
+<div id="wrangle-with-data" class="section level2">
+<h2>Wrangle with Data</h2>
+<div id="prerequisite" class="section level3">
+<h3>Prerequisite</h3>
+<pre class="r"><code># install.packages(&quot;tidyverse&quot;)
+library(tidyverse)</code></pre>
+<p>Tidyverse contains the packages you may need to use in data science, including ggplot2, dplyr, etc. So you do not need to install them individually.</p>
+</div>
+<div id="data" class="section level3">
+<h3>Data</h3>
+<pre class="r"><code>ggplot2::mpg
+#&gt; # A tibble: 234 x 11
+#&gt;    manufacturer model displ  year   cyl trans drv     cty   hwy fl    class
+#&gt;    &lt;chr&gt;        &lt;chr&gt; &lt;dbl&gt; &lt;int&gt; &lt;int&gt; &lt;chr&gt; &lt;chr&gt; &lt;int&gt; &lt;int&gt; &lt;chr&gt; &lt;chr&gt;
+#&gt;  1 audi         a4      1.8  1999     4 auto~ f        18    29 p     comp~
+#&gt;  2 audi         a4      1.8  1999     4 manu~ f        21    29 p     comp~
+#&gt;  3 audi         a4      2    2008     4 manu~ f        20    31 p     comp~
+#&gt;  4 audi         a4      2    2008     4 auto~ f        21    30 p     comp~
+#&gt;  5 audi         a4      2.8  1999     6 auto~ f        16    26 p     comp~
+#&gt;  6 audi         a4      2.8  1999     6 manu~ f        18    26 p     comp~
+#&gt;  7 audi         a4      3.1  2008     6 auto~ f        18    27 p     comp~
+#&gt;  8 audi         a4 q~   1.8  1999     4 manu~ 4        18    26 p     comp~
+#&gt;  9 audi         a4 q~   1.8  1999     4 auto~ 4        16    25 p     comp~
+#&gt; 10 audi         a4 q~   2    2008     4 manu~ 4        20    28 p     comp~
+#&gt; # ... with 224 more rows</code></pre>
+<p><code>?ggplot2::mpg</code> # For more information</p>
+<p>Or you can simply call <code>?mpg</code> if you had already call the library.</p>
+</div>
+</div>
+<div id="dplyr-資料轉換" class="section level2">
+<h2><code>dplyr</code> 資料轉換</h2>
+<p>未來的課程總共會涵蓋下列 <code>dplyr</code> 中的函數:</p>
+<ul>
+<li><code>filter()</code> and <code>select()</code></li>
+<li><code>group_by()</code> and <code>ungroup()</code></li>
+<li><code>summarize()</code>and <code>summarise()</code></li>
+<li><code>arrange()</code> and <code>desc()</code></li>
+<li><code>mutate()</code></li>
+</ul>
+<div id="select-columns-with-select" class="section level3">
+<h3>Select columns with <code>select()</code></h3>
+<pre class="r"><code>df &lt;- select(mpg, manufacturer, cty, hwy, class)
+df
+summary(df)
+table(df %&gt;% select(manufacturer, class))</code></pre>
+<pre class="r"><code>df &lt;- select(mpg, manufacturer, cty, hwy, class)
+df
+#&gt; # A tibble: 234 x 4
+#&gt;    manufacturer   cty   hwy class  
+#&gt;    &lt;chr&gt;        &lt;int&gt; &lt;int&gt; &lt;chr&gt;  
+#&gt;  1 audi            18    29 compact
+#&gt;  2 audi            21    29 compact
+#&gt;  3 audi            20    31 compact
+#&gt;  4 audi            21    30 compact
+#&gt;  5 audi            16    26 compact
+#&gt;  6 audi            18    26 compact
+#&gt;  7 audi            18    27 compact
+#&gt;  8 audi            18    26 compact
+#&gt;  9 audi            16    25 compact
+#&gt; 10 audi            20    28 compact
+#&gt; # ... with 224 more rows
+summary(df)
+#&gt;  manufacturer            cty             hwy           class          
+#&gt;  Length:234         Min.   : 9.00   Min.   :12.00   Length:234        
+#&gt;  Class :character   1st Qu.:14.00   1st Qu.:18.00   Class :character  
+#&gt;  Mode  :character   Median :17.00   Median :24.00   Mode  :character  
+#&gt;                     Mean   :16.86   Mean   :23.44                     
+#&gt;                     3rd Qu.:19.00   3rd Qu.:27.00                     
+#&gt;                     Max.   :35.00   Max.   :44.00
+table(df %&gt;% select(manufacturer, class))
+#&gt;             class
+#&gt; manufacturer 2seater compact midsize minivan pickup subcompact suv
+#&gt;   audi             0      15       3       0      0          0   0
+#&gt;   chevrolet        5       0       5       0      0          0   9
+#&gt;   dodge            0       0       0      11     19          0   7
+#&gt;   ford             0       0       0       0      7          9   9
+#&gt;   honda            0       0       0       0      0          9   0
+#&gt;   hyundai          0       0       7       0      0          7   0
+#&gt;   jeep             0       0       0       0      0          0   8
+#&gt;   land rover       0       0       0       0      0          0   4
+#&gt;   lincoln          0       0       0       0      0          0   3
+#&gt;   mercury          0       0       0       0      0          0   4
+#&gt;   nissan           0       2       7       0      0          0   4
+#&gt;   pontiac          0       0       5       0      0          0   0
+#&gt;   subaru           0       4       0       0      0          4   6
+#&gt;   toyota           0      12       7       0      7          0   8
+#&gt;   volkswagen       0      14       7       0      0          6   0</code></pre>
+</div>
+<div id="filter-rows-with-filter" class="section level3">
+<h3>Filter rows with <code>filter()</code></h3>
+<p>Logic “and”</p>
+<pre class="r"><code>filter(df, class == &quot;compact&quot;, cty &lt; 20)
+#&gt; # A tibble: 21 x 4
+#&gt;    manufacturer   cty   hwy class  
+#&gt;    &lt;chr&gt;        &lt;int&gt; &lt;int&gt; &lt;chr&gt;  
+#&gt;  1 audi            18    29 compact
+#&gt;  2 audi            16    26 compact
+#&gt;  3 audi            18    26 compact
+#&gt;  4 audi            18    27 compact
+#&gt;  5 audi            18    26 compact
+#&gt;  6 audi            16    25 compact
+#&gt;  7 audi            19    27 compact
+#&gt;  8 audi            15    25 compact
+#&gt;  9 audi            17    25 compact
+#&gt; 10 audi            17    25 compact
+#&gt; # ... with 11 more rows</code></pre>
+<p>Logic “or”</p>
+<p>These three are equivalent.</p>
+<pre class="r"><code>filter(df, class == &quot;compact&quot; | class == &quot;suv&quot;)
+df %&gt;% filter(class == &quot;compact&quot; | class == &quot;suv&quot;)
+df %&gt;% filter(class %in% c(&quot;compact&quot;, &quot;suv&quot;))</code></pre>
+<pre class="r"><code>filter(df, class == &quot;compact&quot; | class == &quot;suv&quot;)
+#&gt; # A tibble: 109 x 4
+#&gt;    manufacturer   cty   hwy class  
+#&gt;    &lt;chr&gt;        &lt;int&gt; &lt;int&gt; &lt;chr&gt;  
+#&gt;  1 audi            18    29 compact
+#&gt;  2 audi            21    29 compact
+#&gt;  3 audi            20    31 compact
+#&gt;  4 audi            21    30 compact
+#&gt;  5 audi            16    26 compact
+#&gt;  6 audi            18    26 compact
+#&gt;  7 audi            18    27 compact
+#&gt;  8 audi            18    26 compact
+#&gt;  9 audi            16    25 compact
+#&gt; 10 audi            20    28 compact
+#&gt; # ... with 99 more rows
+df %&gt;% filter(class == &quot;compact&quot; | class == &quot;suv&quot;)
+#&gt; # A tibble: 109 x 4
+#&gt;    manufacturer   cty   hwy class  
+#&gt;    &lt;chr&gt;        &lt;int&gt; &lt;int&gt; &lt;chr&gt;  
+#&gt;  1 audi            18    29 compact
+#&gt;  2 audi            21    29 compact
+#&gt;  3 audi            20    31 compact
+#&gt;  4 audi            21    30 compact
+#&gt;  5 audi            16    26 compact
+#&gt;  6 audi            18    26 compact
+#&gt;  7 audi            18    27 compact
+#&gt;  8 audi            18    26 compact
+#&gt;  9 audi            16    25 compact
+#&gt; 10 audi            20    28 compact
+#&gt; # ... with 99 more rows
+df %&gt;% filter(class %in% c(&quot;compact&quot;, &quot;suv&quot;))
+#&gt; # A tibble: 109 x 4
+#&gt;    manufacturer   cty   hwy class  
+#&gt;    &lt;chr&gt;        &lt;int&gt; &lt;int&gt; &lt;chr&gt;  
+#&gt;  1 audi            18    29 compact
+#&gt;  2 audi            21    29 compact
+#&gt;  3 audi            20    31 compact
+#&gt;  4 audi            21    30 compact
+#&gt;  5 audi            16    26 compact
+#&gt;  6 audi            18    26 compact
+#&gt;  7 audi            18    27 compact
+#&gt;  8 audi            18    26 compact
+#&gt;  9 audi            16    25 compact
+#&gt; 10 audi            20    28 compact
+#&gt; # ... with 99 more rows</code></pre>
+<p>You can work this way!</p>
+<pre class="r"><code>mpg %&gt;%
+  select(manufacturer, cty, hwy, class) %&gt;%
+  filter(class %in% c(&quot;compact&quot;, &quot;suv&quot;))
+#&gt; # A tibble: 109 x 4
+#&gt;    manufacturer   cty   hwy class  
+#&gt;    &lt;chr&gt;        &lt;int&gt; &lt;int&gt; &lt;chr&gt;  
+#&gt;  1 audi            18    29 compact
+#&gt;  2 audi            21    29 compact
+#&gt;  3 audi            20    31 compact
+#&gt;  4 audi            21    30 compact
+#&gt;  5 audi            16    26 compact
+#&gt;  6 audi            18    26 compact
+#&gt;  7 audi            18    27 compact
+#&gt;  8 audi            18    26 compact
+#&gt;  9 audi            16    25 compact
+#&gt; 10 audi            20    28 compact
+#&gt; # ... with 99 more rows</code></pre>
+<p>在挑出這些資料後，我們想比較不同製造商在其中兩種車型的市區油耗的平均值:</p>
+<p>分成兩步驟，分類與取平均值。</p>
+<p><strong>Step 1: 分類</strong></p>
+<pre class="r"><code>mpg %&gt;%
+  select(manufacturer, cty, hwy, class) %&gt;%
+  filter(class %in% c(&quot;compact&quot;, &quot;suv&quot;)) %&gt;%
+  group_by(manufacturer, class)
+#&gt; # A tibble: 109 x 4
+#&gt; # Groups:   manufacturer, class [15]
+#&gt;    manufacturer   cty   hwy class  
+#&gt;    &lt;chr&gt;        &lt;int&gt; &lt;int&gt; &lt;chr&gt;  
+#&gt;  1 audi            18    29 compact
+#&gt;  2 audi            21    29 compact
+#&gt;  3 audi            20    31 compact
+#&gt;  4 audi            21    30 compact
+#&gt;  5 audi            16    26 compact
+#&gt;  6 audi            18    26 compact
+#&gt;  7 audi            18    27 compact
+#&gt;  8 audi            18    26 compact
+#&gt;  9 audi            16    25 compact
+#&gt; 10 audi            20    28 compact
+#&gt; # ... with 99 more rows</code></pre>
+<p>可以看到 <code>Groups:   manufacturer, class [15]</code> 的訊息。</p>
+<p><code>group_by()</code> 是對某個變數的值做分類。比如 <code>group_by(manufacturer, class)</code> 就是對製造商和車型做分類。</p>
+<p>仔細觀察資料的話，會發現並不是所有製造商都有這兩種車型被記錄在資料裡。</p>
+<pre><code>#&gt; Error in datatable(df): 沒有這個函數 &quot;datatable&quot;</code></pre>
+<p><strong>Step 2: 取平均值</strong></p>
+<pre class="r"><code>mpg %&gt;%
+  select(manufacturer, cty, hwy, class) %&gt;%
+  filter(class %in% c(&quot;compact&quot;, &quot;suv&quot;)) %&gt;%
+  group_by(manufacturer, class) %&gt;%
+  summarise(avg = mean(cty))
+#&gt; # A tibble: 15 x 3
+#&gt; # Groups:   manufacturer [12]
+#&gt;    manufacturer class     avg
+#&gt;    &lt;chr&gt;        &lt;chr&gt;   &lt;dbl&gt;
+#&gt;  1 audi         compact  17.9
+#&gt;  2 chevrolet    suv      12.7
+#&gt;  3 dodge        suv      11.9
+#&gt;  4 ford         suv      12.9
+#&gt;  5 jeep         suv      13.5
+#&gt;  6 land rover   suv      11.5
+#&gt;  7 lincoln      suv      11.3
+#&gt;  8 mercury      suv      13.2
+#&gt;  9 nissan       compact  20  
+#&gt; 10 nissan       suv      13.8
+#&gt; 11 subaru       compact  19.8
+#&gt; 12 subaru       suv      18.8
+#&gt; 13 toyota       compact  22.2
+#&gt; 14 toyota       suv      14.4
+#&gt; 15 volkswagen   compact  20.8</code></pre>
+<p><code>summarise()</code> 和 <code>summarize()</code> 功能一樣，純粹是英美式差異。</p>
+<p><code>summarise()</code> 會整合成另一個資料框，<code>avg</code> 是變數名稱，
+<code>mean()</code> 是整合的方式，計算 <code>cty</code> 的平均值。</p>
+<p>可是想加入高速公路油耗進行比較，要怎麼辦呢?複製貼上，改 <code>cty</code> 為 <code>hwy</code> 是一種作法，但不是很高明。如果要把製造商的 <code>cty</code> 和 <code>hwy</code> 的平均值整理在一起又要再多一個步驟。</p>
+<p>這件事情可以用 <code>summarise()</code> 一次做完:</p>
+<pre class="r"><code>mpg %&gt;%
+  select(manufacturer, cty, hwy, class) %&gt;%
+  filter(class %in% c(&quot;compact&quot;, &quot;suv&quot;)) %&gt;%
+  group_by(manufacturer) %&gt;%
+  summarise(cty_avg = mean(cty), hwy_avg = mean(hwy))
+#&gt; # A tibble: 12 x 3
+#&gt;    manufacturer cty_avg hwy_avg
+#&gt;    &lt;chr&gt;          &lt;dbl&gt;   &lt;dbl&gt;
+#&gt;  1 audi            17.9    26.9
+#&gt;  2 chevrolet       12.7    17.1
+#&gt;  3 dodge           11.9    16  
+#&gt;  4 ford            12.9    17.8
+#&gt;  5 jeep            13.5    17.6
+#&gt;  6 land rover      11.5    16.5
+#&gt;  7 lincoln         11.3    17  
+#&gt;  8 mercury         13.2    18  
+#&gt;  9 nissan          15.8    21.3
+#&gt; 10 subaru          19.2    25.4
+#&gt; 11 toyota          19.1    25.6
+#&gt; 12 volkswagen      20.8    28.5</code></pre>
+<p>可是現在沒辦法直接看出哪個製造商的平均油耗最高最低，我們想要排列資料:</p>
+<pre class="r"><code>mpg %&gt;%
+  select(manufacturer, cty, hwy, class) %&gt;%
+  filter(class %in% c(&quot;compact&quot;, &quot;suv&quot;)) %&gt;%
+  group_by(manufacturer) %&gt;%
+  summarise(cty_avg = mean(cty), hwy_avg = mean(hwy)) %&gt;%
+  arrange(cty_avg)
+#&gt; # A tibble: 12 x 3
+#&gt;    manufacturer cty_avg hwy_avg
+#&gt;    &lt;chr&gt;          &lt;dbl&gt;   &lt;dbl&gt;
+#&gt;  1 lincoln         11.3    17  
+#&gt;  2 land rover      11.5    16.5
+#&gt;  3 dodge           11.9    16  
+#&gt;  4 chevrolet       12.7    17.1
+#&gt;  5 ford            12.9    17.8
+#&gt;  6 mercury         13.2    18  
+#&gt;  7 jeep            13.5    17.6
+#&gt;  8 nissan          15.8    21.3
+#&gt;  9 audi            17.9    26.9
+#&gt; 10 toyota          19.1    25.6
+#&gt; 11 subaru          19.2    25.4
+#&gt; 12 volkswagen      20.8    28.5</code></pre>
+<p><code>arrange()</code> <strong>由小到大</strong>排列 <code>cty_avg</code> 這個變數。
+希望油耗表現最好的排在第一位，就用 <code>desc()</code> 包住 <code>cty_avg</code>。</p>
+<pre class="r"><code>mpg %&gt;%
+  select(manufacturer, cty, hwy, class) %&gt;%
+  filter(class %in% c(&quot;compact&quot;, &quot;suv&quot;)) %&gt;%
+  group_by(manufacturer) %&gt;%
+  summarise(cty_avg = mean(cty), hwy_avg = mean(hwy)) %&gt;%
+  arrange(desc(cty_avg))
+#&gt; # A tibble: 12 x 3
+#&gt;    manufacturer cty_avg hwy_avg
+#&gt;    &lt;chr&gt;          &lt;dbl&gt;   &lt;dbl&gt;
+#&gt;  1 volkswagen      20.8    28.5
+#&gt;  2 subaru          19.2    25.4
+#&gt;  3 toyota          19.1    25.6
+#&gt;  4 audi            17.9    26.9
+#&gt;  5 nissan          15.8    21.3
+#&gt;  6 jeep            13.5    17.6
+#&gt;  7 mercury         13.2    18  
+#&gt;  8 ford            12.9    17.8
+#&gt;  9 chevrolet       12.7    17.1
+#&gt; 10 dodge           11.9    16  
+#&gt; 11 land rover      11.5    16.5
+#&gt; 12 lincoln         11.3    17</code></pre>
+<p>市區油耗的表現都不如高速公路的油耗，可能是因為市區會一直塞車，走走停停，所以油耗表現比較差。但是差距有多少呢?</p>
+<pre class="r"><code>mpg %&gt;%
+  select(manufacturer, cty, hwy, class) %&gt;%
+  filter(class %in% c(&quot;compact&quot;, &quot;suv&quot;)) %&gt;%
+  group_by(manufacturer) %&gt;%
+  summarise(cty_avg = mean(cty), hwy_avg = mean(hwy)) %&gt;%
+  mutate(difference = hwy_avg - cty_avg)
+#&gt; # A tibble: 12 x 4
+#&gt;    manufacturer cty_avg hwy_avg difference
+#&gt;    &lt;chr&gt;          &lt;dbl&gt;   &lt;dbl&gt;      &lt;dbl&gt;
+#&gt;  1 audi            17.9    26.9       9   
+#&gt;  2 chevrolet       12.7    17.1       4.44
+#&gt;  3 dodge           11.9    16         4.14
+#&gt;  4 ford            12.9    17.8       4.89
+#&gt;  5 jeep            13.5    17.6       4.12
+#&gt;  6 land rover      11.5    16.5       5   
+#&gt;  7 lincoln         11.3    17         5.67
+#&gt;  8 mercury         13.2    18         4.75
+#&gt;  9 nissan          15.8    21.3       5.50
+#&gt; 10 subaru          19.2    25.4       6.20
+#&gt; 11 toyota          19.1    25.6       6.55
+#&gt; 12 volkswagen      20.8    28.5       7.71</code></pre>
+<p><code>mutate()</code> 新增變數，變數命名為 <code>difference</code>，是計算
+<code>hwy_avg</code> 和 <code>cty_avg</code> 的差異，
+<code>-</code> 跟你想的應該一樣，代表減法。</p>
+</div>
+</div>
+<div id="ggplot2-資料視覺化" class="section level2">
+<h2><code>ggplot2</code> 資料視覺化</h2>
+<pre class="r"><code>ggplot(data = mpg) +
+  geom_point(mapping = aes(x = cty, y = hwy))</code></pre>
+<p><img src="/post/20191010/2019-10-10-TA-class_files/figure-html/unnamed-chunk-21-1.png" width="672" /></p>
+<p>看到 <code>ggplot()</code> 代表要畫圖了，裡面第一個位置放資料 <code>mpg</code>。</p>
+<p>這裡的 <code>+</code> 可能跟你想的加法不一樣，
+接在 <code>ggplot2</code> 包的函數後面，
+就達到跟 <code>%&gt;%</code> 相同的效果。
+所以你發現了嗎?這就是個坑，很可能不小心就寫錯。</p>
+<p>來看看 RStudio 首席工程師 Hadley 的看法:</p>
+<center>
+<p><img src="fig_ggplot_pipe.PNG" /></p>
+</center>
+<pre class="r"><code>ggplot(data = mpg) +
+  geom_point(mapping = aes(x = cty, y = hwy))</code></pre>
+<p><code>geom_point()</code> 是畫點圖。</p>
+<p><code>mapping()</code> 是指映射。</p>
+<p><code>aes()</code> 是 asthetic 的簡稱，是美學的意思。
+<code>aes()</code> 放的是座標軸，順序是 <code>x</code> 軸 <code>y</code> 軸。
+通常會省略 <code>x</code>、<code>y</code>。</p>
+<p>通常會把函數的名稱省略，所以 <code>data</code>、<code>mapping</code>、<code>x</code>、<code>y</code> 都可以省略。但是不能更改他們擺放的順序。所以下面兩個是完全不同的映射方式。</p>
+<pre class="r"><code>ggplot(mpg) +
+  geom_point(aes(cty, hwy))</code></pre>
+<p><img src="/post/20191010/2019-10-10-TA-class_files/figure-html/unnamed-chunk-23-1.png" width="672" /></p>
+<pre class="r"><code>
+ggplot(mpg) +
+  geom_point(aes(hwy, cty))</code></pre>
+<p><img src="/post/20191010/2019-10-10-TA-class_files/figure-html/unnamed-chunk-23-2.png" width="672" /></p>
+<p>如果要畫兩種以上的圖，只要用 <code>+</code> 連接即可:</p>
+<pre class="r"><code>ggplot(data = mpg, mapping = aes(x = cty, y = hwy)) +
+  geom_point() +
+  geom_smooth(method = lm)</code></pre>
+<p><img src="/post/20191010/2019-10-10-TA-class_files/figure-html/unnamed-chunk-24-1.png" width="672" /></p>
+<p><code>geom_smooth(method = lm)</code> 是指用線性迴歸畫圖，在此不深究這個問題。</p>
+<p>寫法有其他種類的變形，來比較一下:</p>
+<pre class="r"><code>mpg %&gt;%
+  ggplot(aes(cty, hwy)) +
+    geom_point()
+
+ggplot(mpg, aes(cty, hwy)) +
+  geom_point()
+
+ggplot(mpg) +
+  geom_point(aes(cty, hwy))
+
+mpg %&gt;% 
+  ggplot() +
+    geom_point(aes(cty, hwy))</code></pre>
+<p>第一種是把資料擺在 <code>ggplot()</code> 外頭，再用 <code>%&gt;%</code> 傳到下一步驟。</p>
+<p>第二種是把資料擺在 <code>ggplot()</code> 裡面。</p>
+<p>第三種把美學擺在畫圖的方式。</p>
+<p>或許你能寫出第四種，再想第五種…</p>
+<p>但是，別寫成這樣，是錯的:</p>
+<pre class="r"><code>ggplot(mpg, cty, hwy) +
+  geom_point()
+#&gt; Error in ggplot.default(mpg, cty, hwy): 找不到物件 &#39;cty&#39;
+
+ggplot(mpg) +
+  geom_point(cty, hwy)
+#&gt; Error in layer(data = data, mapping = mapping, stat = stat, geom = GeomPoint, : 找不到物件 &#39;cty&#39;</code></pre>
+<p>在回到剛才整理過的資料，現在要以視覺化的方式呈現，我們想看出市區與高速公路油耗的差異:</p>
+<pre class="r"><code>mpg %&gt;%
+  select(manufacturer, cty, hwy, class) %&gt;%
+  filter(class %in% c(&quot;compact&quot;, &quot;suv&quot;)) %&gt;%
+  group_by(manufacturer) %&gt;%
+  summarise(cty_avg = mean(cty), hwy_avg = mean(hwy)) %&gt;%
+  mutate(difference = hwy_avg - cty_avg) %&gt;%
+  ggplot() +
+  geom_col(aes(manufacturer, hwy_avg), 
+           alpha = 0.2, fill = &quot;orange&quot;, color = &quot;darkorange&quot;) +
+  geom_col(aes(manufacturer, difference), 
+           alpha = 0.3, fill = &quot;violet&quot;, color = &quot;purple&quot;) +
+  coord_flip() +
+  theme_classic()</code></pre>
+<p><img src="/post/20191010/2019-10-10-TA-class_files/figure-html/unnamed-chunk-27-1.png" width="672" /></p>
+<p><code>geom_col()</code> 和 <code>geom_boxplot()</code> 都適用於雙變數，一個離散，一個連續。也許你可以試著疊加盒鬚圖與長條圖。</p>
+<p>只要用顏色就能區分即可，所以使用 <code>difference</code> 比 <code>cty_avg</code> 更適當。</p>
+<p>當然可以自行嘗試使用 <code>cty_avg</code> 的後果。</p>
+<p><code>alpha</code> 設定透明度。</p>
+<p><code>fill</code> 填滿顏色。</p>
+<p><code>color</code> 邊框顏色。</p>
+<p>受限於目前的講解內容，我們整理的資料尚未達到“齊整”，應該再做一些調整更容易做事。</p>
+<p><em>齊整資料 : tidy data</em></p>
+</div>
+</div>
+<div id="homework" class="section level1">
+<h1>Homework</h1>
+<div id="homework-1" class="section level2">
+<h2>10/17 Homework</h2>
+<p>Wrangle with <code>ggplot2::mpg</code> and show the result.</p>
+<ol style="list-style-type: decimal">
+<li><p>Select <code>manufacturer</code>, <code>year</code>, and <code>displ</code>.</p></li>
+<li><p>Filter <code>year</code> is 1999 and <code>displ &lt; 2</code>.</p></li>
+</ol>
+<p>Reference solution</p>
+<pre><code>#&gt; # A tibble: 234 x 3
+#&gt;    manufacturer  year displ
+#&gt;    &lt;chr&gt;        &lt;int&gt; &lt;dbl&gt;
+#&gt;  1 audi          1999   1.8
+#&gt;  2 audi          1999   1.8
+#&gt;  3 audi          2008   2  
+#&gt;  4 audi          2008   2  
+#&gt;  5 audi          1999   2.8
+#&gt;  6 audi          1999   2.8
+#&gt;  7 audi          2008   3.1
+#&gt;  8 audi          1999   1.8
+#&gt;  9 audi          1999   1.8
+#&gt; 10 audi          2008   2  
+#&gt; # ... with 224 more rows
+#&gt; # A tibble: 17 x 3
+#&gt;    manufacturer  year displ
+#&gt;    &lt;chr&gt;        &lt;int&gt; &lt;dbl&gt;
+#&gt;  1 audi          1999   1.8
+#&gt;  2 audi          1999   1.8
+#&gt;  3 audi          1999   1.8
+#&gt;  4 audi          1999   1.8
+#&gt;  5 honda         1999   1.6
+#&gt;  6 honda         1999   1.6
+#&gt;  7 honda         1999   1.6
+#&gt;  8 honda         1999   1.6
+#&gt;  9 honda         1999   1.6
+#&gt; 10 toyota        1999   1.8
+#&gt; 11 toyota        1999   1.8
+#&gt; 12 toyota        1999   1.8
+#&gt; 13 volkswagen    1999   1.9
+#&gt; 14 volkswagen    1999   1.9
+#&gt; 15 volkswagen    1999   1.9
+#&gt; 16 volkswagen    1999   1.8
+#&gt; 17 volkswagen    1999   1.8</code></pre>
+</div>
+<div id="作業" class="section level2">
+<h2>10/24 作業</h2>
+<div id="請觀察下面兩種做法分別說明會如何計算總數" class="section level3">
+<h3>1. 請觀察下面兩種做法，<strong>分別</strong>說明會如何計算總數?</h3>
+<p>其中 <code>n()</code> 是計算總數，命名為 <code>cars</code>。</p>
+<p>解除群組做法是用管線接一句 <code>ungroup()</code>，裡面不用再寫其他記號。</p>
+<pre class="r"><code>df &lt;- mpg %&gt;%
+  select(manufacturer, cty, hwy, class) %&gt;%
+  filter(class %in% c(&quot;compact&quot;, &quot;suv&quot;)) %&gt;%
+  group_by(manufacturer, class) 
+
+# 第一種沒有 ungroup
+df %&gt;% summarise(cars = n())
+
+# 第二種有 ungroup
+df %&gt;%
+  ungroup() %&gt;%
+  summarise(cars = n())</code></pre>
+</div>
+<div id="資料整理的方式如下" class="section level3">
+<h3>2. 資料整理的方式如下，</h3>
+<ol style="list-style-type: decimal">
+<li>接著請畫出製造商在每種車型的市區油耗與高速公路油耗的盒鬚圖。</li>
+<li>說明 <code>coord_flip()</code> 可以解決的問題。</li>
+<li>說明你喜歡哪一種主題的作圖。比如範例是 <code>theme_classic()</code> 畫圖。</li>
+</ol>
+<p>提示: <code>geom_boxplot()</code> 的美學在 x 軸是離散的變數，y 軸是連續的變數</p>
+<p>當然 <code>color</code> 或是 <code>theme_*()</code> 都可以自行挑選喜歡的。
+<code>*</code> 為名稱代換的部分。</p>
+<pre class="r"><code>mpg %&gt;%
+  select(manufacturer, cty, hwy, class) %&gt;%
+  filter(class %in% c(&quot;compact&quot;, &quot;suv&quot;)) %&gt;%
+  group_by(manufacturer, class) %&gt;%
+  ggplot() +
+  geom_boxplot(mapping = aes(x = ___, y = ___), color = &quot;violet&quot;) +
+  geom_boxplot(mapping = aes(x = ___, y = ___), color = &quot;orange&quot;) +
+  coord_flip() +
+  theme_classic()</code></pre>
+</div>
+</div>
+<div id="作業-1" class="section level2">
+<h2>10/31 作業</h2>
+<div id="比較-compact-和-suv-兩種車型在市區油耗與高速公路油耗的差異" class="section level3">
+<h3>1. 比較 <code>compact</code> 和 <code>suv</code> 兩種車型在市區油耗與高速公路油耗的差異。</h3>
+</div>
+<div id="畫圖表現差異" class="section level3">
+<h3>2. 畫圖表現差異。</h3>
+<p><img src="/post/20191010/2019-10-10-TA-class_files/figure-html/unnamed-chunk-31-1.png" width="672" /></p>
+</div>
+</div>
+</div>
+<div id="other-subjects" class="section level1">
+<h1>Other subjects</h1>
+<div id="迴圈敘述統計機率模型" class="section level2">
+<h2>迴圈、敘述統計、機率模型</h2>
+<div id="學習目標" class="section level3">
+<h3>學習目標</h3>
+<p>比較常態分佈</p>
+<ol style="list-style-type: decimal">
+<li><p>相同的平均值，不同的標準差</p></li>
+<li><p>不同的平均值，相同的標準差</p></li>
+</ol>
+</div>
+</div>
+<div id="資料框-data-frame" class="section level2">
+<h2>資料框 data frame</h2>
+<p>建立資料框</p>
+<p><strong>法一</strong></p>
+<pre class="r"><code>df &lt;- data.frame(a = 1:3, b = 4:6)</code></pre>
+<pre><code>#&gt;   a b
+#&gt; 1 1 4
+#&gt; 2 2 5
+#&gt; 3 3 6</code></pre>
+<p><strong>法二</strong></p>
+<pre class="r"><code>df &lt;- data.frame(
+  matrix(1:6, nrow = 3))
+
+names(df) &lt;- c(&quot;a&quot;, &quot;b&quot;)</code></pre>
+<pre><code>#&gt;   a b
+#&gt; 1 1 4
+#&gt; 2 2 5
+#&gt; 3 3 6</code></pre>
+<p><strong>法三</strong></p>
+<pre class="r"><code>df &lt;- data.frame(
+  matrix(0, nrow = 3, ncol = 2))
+
+df[[1]] &lt;- 1:3
+df[[2]] &lt;- 4:6</code></pre>
+<pre><code>#&gt;   X1 X2
+#&gt; 1  1  4
+#&gt; 2  2  5
+#&gt; 3  3  6</code></pre>
+<div id="習題" class="section level3">
+<h3>習題</h3>
+<p>分別從 <span class="math inline">\(N(\mu = 0, \sigma = 1)\)</span>、<span class="math inline">\(N(\mu = 0, \sigma = 2)\)</span>、<span class="math inline">\(N(\mu = 5, \sigma = 1)\)</span> 抽出 1000 個樣本。</p>
+<p>其中，<span class="math inline">\(N\)</span> 表示常態分佈，<span class="math inline">\(\mu\)</span> 表示平均值，<span class="math inline">\(\sigma\)</span> 表示標準差。</p>
+<p>畫圖比較</p>
+<ol style="list-style-type: decimal">
+<li><p>相同的平均值，不同的標準差</p></li>
+<li><p>不同的平均值，相同的標準差</p></li>
+</ol>
+<p><img src="/post/20191010/2019-10-10-TA-class_files/figure-html/unnamed-chunk-38-1.png" width="672" /><img src="/post/20191010/2019-10-10-TA-class_files/figure-html/unnamed-chunk-38-2.png" width="672" /></p>
+<pre class="r"><code>df &lt;- data.frame(
+  matrix(0, nrow = 1000, ncol = 2))
+
+df[[1]] &lt;- rnorm(n = 1000, mean = 0, sd = 1)
+df[[2]] &lt;- dnorm(df[[1]], mean = 0, sd = 1)</code></pre>
+<p><code>rnorm()</code> 隨機抽樣</p>
+<p><code>dnorm()</code> 抽出樣本的機率</p>
+<pre class="r"><code>plot(x = df[[1]], y = df[[2]])</code></pre>
+<p><img src="/post/20191010/2019-10-10-TA-class_files/figure-html/unnamed-chunk-40-1.png" width="672" /></p>
+<p>依此類推，分別對三種分布抽出 1000 個樣本。</p>
+<pre class="r"><code>df &lt;- data.frame(
+  matrix(0, nrow = 1000, ncol = 6))
+
+df[[1]] &lt;- rnorm(1000, mean = 0, sd = 1)
+df[[2]] &lt;- dnorm(df[[1]], mean = 0, sd = 1)
+df[[3]] &lt;- rnorm(____, mean = 0, sd = 2)
+df[[4]] &lt;- dnorm(____, mean = 0, sd = 2)
+df[[5]] &lt;- rnorm(____, mean = 5, sd = 1)
+df[[6]] &lt;- dnorm(____, mean = 5, sd = 1)</code></pre>
+<p>知道函數 argument 的順序，可以省略 argument。</p>
+<pre class="r"><code># 這兩個一樣
+df[[1]] &lt;- rnorm(1000, mean = 0, sd = 1)
+df[[1]] &lt;- rnorm(1000, 0, 1)</code></pre>
+<p>第一小題，在比較相同的平均值，不同的標準差的時候，會需要疊圖，疊圖的方法是使用 <code>par(new = T)</code>，</p>
+<pre class="r"><code>plot(x = df[[1]], y = df[[2]])
+par(new = T)
+plot(x = df[[3]], y = df[[4]])</code></pre>
+<p><img src="/post/20191010/2019-10-10-TA-class_files/figure-html/unnamed-chunk-44-1.png" width="672" /></p>
+<p>但是尺度可能不一樣，用 <code>xlim()</code>，<code>ylim()</code> 限制範圍。</p>
+<pre class="r"><code>plot(x = df[[1]], y = df[[2]], xlim = c(-3,3), ylim = c(0,0.5))
+par(new = T)
+plot(x = df[[3]], y = df[[4]], xlim = c(-3,3), ylim = c(0,0.5))</code></pre>
+<p><img src="/post/20191010/2019-10-10-TA-class_files/figure-html/unnamed-chunk-45-1.png" width="672" /></p>
+<p>以此類推，第二小題，</p>
+<pre class="r"><code>plot(x = df[[1]], y = df[[2]], xlim = c(__,__), ylim = c(__,__))
+par(new = T)
+plot(x = _______, y = _______, xlim = c(__,__), ylim = c(__,__))</code></pre>
+</div>
+</div>
+<div id="統計圖表繪製" class="section level2">
+<h2>統計圖表繪製</h2>
+<div id="review" class="section level3">
+<h3>Review</h3>
+<p><a href="https://rstudio.com/resources/cheatsheets/">Find the <strong>Base R</strong> cheetsheet</a></p>
+<p>介紹進階的資料視覺化方法。</p>
+</div>
+<div id="學習目標-1" class="section level3">
+<h3>學習目標</h3>
+<p>介紹 <code>plot()</code> 和 <code>ggplot()</code> 的做法。</p>
+</div>
+<div id="plot" class="section level3">
+<h3><code>plot()</code></h3>
+<pre class="r"><code>df &lt;- data.frame(
+  matrix(0, nrow = 1000, ncol = 2))
+
+df[[1]] &lt;- rnorm(1000, mean = 0, sd = 1)
+df[[2]] &lt;- dnorm(df[[1]], mean = 0, sd = 1)
+
+plot(x = df[[1]], y = df[[2]], 
+     xlim = c(-3,3), ylim = c(0,0.5))</code></pre>
+<p><img src="/post/20191010/2019-10-10-TA-class_files/figure-html/unnamed-chunk-48-1.png" width="672" /></p>
+<pre class="r"><code>head(df)
+#&gt;           X1        X2
+#&gt; 1 -0.1526082 0.3943237
+#&gt; 2  1.0972196 0.2185186
+#&gt; 3 -0.3088498 0.3803617
+#&gt; 4  0.7379168 0.3038567
+#&gt; 5 -0.4889728 0.3539903
+#&gt; 6  0.2061927 0.3905512</code></pre>
+<p>圖表標題，<code>main = "__"</code>，</p>
+<pre class="r"><code>plot(x = df[[1]], y = df[[2]], 
+     xlim = c(-3,3), ylim = c(0,0.5),
+     main = &quot;Normal distribution&quot;,
+     xlab = &quot;x&quot;, ylab = &quot;y&quot;)</code></pre>
+<p><img src="/post/20191010/2019-10-10-TA-class_files/figure-html/unnamed-chunk-50-1.png" width="672" /></p>
+<p>更改坐標軸名稱，<code>xlab = "__"</code>，<code>ylab = "__"</code>，</p>
+<pre class="r"><code>plot(x = df[[1]], y = df[[2]], 
+     xlim = c(-3,3), ylim = c(0,0.5),
+     xlab = &quot;x&quot;, ylab = &quot;y&quot;)</code></pre>
+<p><img src="/post/20191010/2019-10-10-TA-class_files/figure-html/unnamed-chunk-51-1.png" width="672" /></p>
+<p>顏色 <code>col = "____"</code>，</p>
+<pre class="r"><code>plot(x = df[[1]], y = df[[2]], 
+     xlim = c(-3,3), ylim = c(0,0.5),
+     col = &quot;plum&quot;)</code></pre>
+<p><img src="/post/20191010/2019-10-10-TA-class_files/figure-html/unnamed-chunk-52-1.png" width="672" /></p>
+<p>點的形狀 <code>pch = 20</code>，</p>
+<pre class="r"><code>plot(x = df[[1]], y = df[[2]], 
+     xlim = c(-3,3), ylim = c(0,0.5),
+     pch = 20)</code></pre>
+<p><img src="/post/20191010/2019-10-10-TA-class_files/figure-html/unnamed-chunk-53-1.png" width="672" /></p>
+</div>
+<div id="ggplot" class="section level3">
+<h3><code>ggplot()</code></h3>
+<p><a href="https://rstudio.com/resources/cheatsheets/">Find the <strong>Data Visualization Cheat Sheet</strong></a></p>
+<pre class="r"><code>install.packages(&quot;ggplot2&quot;)
+library(ggplot2)</code></pre>
+<pre class="r"><code>head(df)
+#&gt;           X1        X2
+#&gt; 1 -0.1526082 0.3943237
+#&gt; 2  1.0972196 0.2185186
+#&gt; 3 -0.3088498 0.3803617
+#&gt; 4  0.7379168 0.3038567
+#&gt; 5 -0.4889728 0.3539903
+#&gt; 6  0.2061927 0.3905512</code></pre>
+<p>基本</p>
+<pre class="r"><code>ggplot(data = df) +
+  geom_point(mapping = aes(X1, X2))</code></pre>
+<p><img src="/post/20191010/2019-10-10-TA-class_files/figure-html/unnamed-chunk-56-1.png" width="672" /></p>
+<p>或者也可以寫成</p>
+<pre class="r"><code>ggplot(df) +
+  geom_point(aes(X1, X2))</code></pre>
+<p><img src="/post/20191010/2019-10-10-TA-class_files/figure-html/unnamed-chunk-57-1.png" width="672" /></p>
+<p>坐標軸名稱與圖表標題</p>
+<pre class="r"><code>ggplot(data = df) +
+  geom_point(mapping = aes(X1, X2)) +
+  labs(x = &quot;x&quot;, y = &quot;y&quot;, title = &quot;Normal distribution&quot;)</code></pre>
+<p><img src="/post/20191010/2019-10-10-TA-class_files/figure-html/unnamed-chunk-58-1.png" width="672" /></p>
+<p>注意 argument 順序</p>
+<pre class="r"><code>ggplot(df) +
+  geom_point(aes(X1, X2)) +
+  labs(&quot;Normal distribution&quot;, &quot;x&quot;, &quot;y&quot;)</code></pre>
+<p><img src="/post/20191010/2019-10-10-TA-class_files/figure-html/unnamed-chunk-59-1.png" width="672" /></p>
+<p>座標軸範圍限制</p>
+<pre class="r"><code>ggplot(data = df) +
+  geom_point(mapping = aes(X1, X2)) +
+  coord_cartesian(xlim = c(-3, 3), ylim = c(0, 0.5))</code></pre>
+<p><img src="/post/20191010/2019-10-10-TA-class_files/figure-html/unnamed-chunk-60-1.png" width="672" /></p>
+<p>顏色</p>
+<pre class="r"><code>ggplot(data = df) +
+  geom_point(mapping = aes(X1, X2), color = &quot;orange&quot;) +
+  coord_cartesian(xlim = c(-3, 3), ylim = c(0, 0.5))</code></pre>
+<p><img src="/post/20191010/2019-10-10-TA-class_files/figure-html/unnamed-chunk-61-1.png" width="672" /></p>
+<p>畫圖主題</p>
+<pre class="r"><code>ggplot(data = df) +
+  geom_point(mapping = aes(X1, X2)) +
+  theme_classic()</code></pre>
+<p><img src="/post/20191010/2019-10-10-TA-class_files/figure-html/unnamed-chunk-62-1.png" width="672" /></p>
+<p>疊圖方法</p>
+<pre class="r"><code>ggplot(data = df) +
+  geom_point(mapping = aes(X1, X2)) +
+  geom_point(mapping = aes(X3, X4)) +
+  theme_classic()</code></pre>
+</div>
+<div id="習題-1" class="section level3">
+<h3>習題</h3>
+<p>進一步視覺化，包括 (1) 圖表標題 (2) 坐標軸名稱 (3) 顏色</p>
+<p>分別從 <span class="math inline">\(N(\mu = 0, \sigma = 1)\)</span>、<span class="math inline">\(N(\mu = 0, \sigma = 2)\)</span>、<span class="math inline">\(N(\mu = 5, \sigma = 1)\)</span> 抽出 1000 個樣本。</p>
+<p>其中，<span class="math inline">\(N\)</span> 表示常態分佈，<span class="math inline">\(\mu\)</span> 表示平均值，<span class="math inline">\(\sigma\)</span> 表示標準差。</p>
+<p>畫圖比較</p>
+<ol style="list-style-type: decimal">
+<li><p>相同的平均值，不同的標準差</p></li>
+<li><p>不同的平均值，相同的標準差</p></li>
+</ol>
+<p><img src="/post/20191010/2019-10-10-TA-class_files/figure-html/unnamed-chunk-64-1.png" width="672" /></p>
+</div>
+</div>
+<div id="區間估計" class="section level2">
+<h2>區間估計</h2>
+<div id="學習目標-2" class="section level3">
+<h3>學習目標</h3>
+<p>了解 <code>qnorm()</code> 和在 R 取“部分”的方法。</p>
+<pre class="r"><code>qnorm(0, 0, 1)
+#&gt; [1] -Inf
+qnorm(0.25, 0, 1)
+#&gt; [1] -0.6744898
+qnorm(0.50, 0, 1)
+#&gt; [1] 0
+qnorm(0.75, 0, 1)
+#&gt; [1] 0.6744898
+qnorm(1, 0, 1)
+#&gt; [1] Inf</code></pre>
+<p>從簡單的樣本出發，</p>
+<pre class="r"><code>df &lt;- data.frame(
+  matrix(0, nrow = 10, ncol = 2))
+
+df[[1]] &lt;- rnorm(10, mean = 0, sd = 1)
+df[[2]] &lt;- dnorm(df[[1]], mean = 0, sd = 1)</code></pre>
+<pre><code>#&gt;             X1        X2
+#&gt; 1  -0.40850826 0.3670057
+#&gt; 2   0.39825957 0.3685261
+#&gt; 3  -0.45585450 0.3595722
+#&gt; 4   0.97719663 0.2474875
+#&gt; 5  -0.51267346 0.3498133
+#&gt; 6  -0.17896694 0.3926043
+#&gt; 7   0.22007180 0.3893976
+#&gt; 8   0.72002588 0.3078455
+#&gt; 9  -0.09956792 0.3969697
+#&gt; 10 -0.42998402 0.3637161</code></pre>
+<p>取出小於 25 百分位的樣本，注意逗點位置，</p>
+<pre class="r"><code>df[df$X1 &lt; qnorm(0.25, 0, 1),]
+#&gt; [1] X1 X2
+#&gt; &lt;0 rows&gt; (or 0-length row.names)
+df[df[[1]] &lt; qnorm(0.25, 0, 1),]
+#&gt; [1] X1 X2
+#&gt; &lt;0 rows&gt; (or 0-length row.names)</code></pre>
+<p>兩個以上的條件，<code>&amp;</code> 表示“且”，<code>|</code> 表示“或”，取出小於 25 百分位的樣本<strong>或</strong>大於 75百分位的樣本。</p>
+<pre class="r"><code>df[df$X1 &lt; qnorm(0.25, 0, 1) | df$X1 &gt; qnorm(0.75, 0, 1),]
+#&gt;          X1        X2
+#&gt; 4 0.9771966 0.2474875
+#&gt; 8 0.7200259 0.3078455</code></pre>
+</div>
+<div id="習題-2" class="section level3">
+<h3>習題</h3>
+<p>從 <span class="math inline">\(N(\mu = 0, \sigma = 1)\)</span> 抽出 1000 個樣本，找出其雙尾 95% 信賴區間，區間內的樣本以紅色表示。</p>
+<p><img src="/post/20191010/2019-10-10-TA-class_files/figure-html/unnamed-chunk-70-1.png" width="672" /></p>
+</div>
+</div>
+</div>

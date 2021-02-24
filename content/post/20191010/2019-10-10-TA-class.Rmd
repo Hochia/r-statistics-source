@@ -1,0 +1,1000 @@
+---
+title: "統計學與實習"
+author: "Hochia"
+output: 
+  html_document:
+    toc: true
+    toc_float: true
+    toc_depth: 3
+date: 2019-10-10T21:13:14-05:00
+categories: ["R"]
+tags: ["R Markdown", "plot", "regression"]
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(comment = "#>", collapse = TRUE, echo = TRUE, error = TRUE, cache = TRUE)
+library(tidyverse)
+```
+
+# TA class
+
+## New Project
+
+File > New Project..
+
+<center>
+
+![New Project][p0]
+
+[p0]: fig_00.PNG
+
+</center>
+
+Set the directory name and the subdirectory.
+
+## R Markdown
+
+You can write the report with RMarkdown. It can generate HTML, PDF, Word, and PPT documents. Furthermore, math equations can be write with LaTex format.
+
+> Find the cheet sheet from *Help > Cheetsheets > R Markdown Cheet Sheet*
+
+Create your R Markdown!
+
+<center>
+
+![R Markdown][p1]
+
+[p1]: fig_01.PNG
+
+</center>
+
+Add the title and author name.
+
+<center>
+
+![Setup][p2]
+
+[p2]: fig_02.PNG
+
+</center>
+
+Kick the "Knit" button.
+
+<center>
+
+![Knit][p3]
+
+[p3]: fig_03.PNG
+
+</center>
+
+Then you will see the following example.
+
+### R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r cars}
+summary(cars)
+```
+
+### Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+
+## R Code Chunks
+
+shortcut 
+
+`Ctrl + Alt + I` on Windows
+
+`Cmd + Option + I` on macOS
+
+Add your R code in code chunk, then R Markdown will run it.
+
+```{r, echo=FALSE, comment=""}
+cat("```{r}\nsummary(cars)\n```")
+```
+
+This is what you see in the document.
+
+```{r}
+summary(cars)
+```
+
+You can embed the variable in the document.
+
+```{r, echo=FALSE, comment=""}
+cat("```{r}\nx = 5  # radius of a circle\n```")
+cat("For a circle with the radius `r x`,
+its area is `r pi * x^2`.")
+```
+
+Then you will see this.
+
+```{r}
+x = 5  # radius of a circle
+```
+
+For a circle with the radius `r x`,
+its area is `r pi * x^2`.
+
+## LaTex
+
+Use `$` to add math equations in the paragraph.
+
+`the acceptance rate in $95\%$ confidence`
+
+the acceptance rate in $95\%$ confidence
+
+
+Use `$$` to add math equations in single or multiple lines.
+
+```
+$$
+f_X(x) = {x-1 \choose r-1} p^r (1-p)^{x-r} I_{(r,r+1, \dots)} (x)
+$$
+```
+
+$$
+f_X(x) = {x-1 \choose r-1} p^r (1-p)^{x-r} I_{(r,r+1, \dots)} (x)
+$$
+
+```
+$$
+\begin{aligned}
+f_X(x) = {x-1 \choose r-1} p^r (1-p)^{x-r} I_{(r,r+1, \dots)} (x)
+f_X(x) = {x-1 \choose r-1} p^r (1-p)^{x-r} I_{(r,r+1, \dots)} (x)
+\end{aligned}
+$$
+```
+
+$$
+\begin{aligned}
+f_X(x) = {x-1 \choose r-1} p^r (1-p)^{x-r} I_{(r,r+1, \dots)} (x)\\
+f_X(x) = {x-1 \choose r-1} p^r (1-p)^{x-r} I_{(r,r+1, \dots)} (x)
+\end{aligned}
+$$
+
+For more information, see [Latex](https://latex.wikia.org/wiki/List_of_LaTeX_symbols) in Wiki.
+
+## 包(Package)
+
+> (@) 為何要用其他的包，base R 不是也有嗎?比如畫圖，R base 有 `plot()`、`boxplot()` 等。為何要用 `ggplot2()`?
+
+為了彌補之前的漏洞，如果輕易的更動 base，
+會癱瘓過去做過的成品。為了避免類似的狀況，所以開發新的方法。
+
+包會整合容易混淆的作法，更一致的表達如何操作。
+
+可是這樣講還是很模糊，要講清楚變成講古。總之我們已經沒必要追究過去怎麼做，只需要與時俱進，學習最新的方法即可。
+
+
+> (@) 為何選 `tidyverse`?
+
+在呼叫 `tidyverse` 的時候會看到下面的資訊:
+
+```{r}
+library(tidyverse)
+```
+
+`tidyverse` 整合 `ggplot2`, `purrr`, `tibble`, `dplyr`, `tidyr`, `stringr`, `readr`, `forcats`，海羅了處理資料的基本方法。
+
+今天進一步介紹 `dplyr` ，還有開始使用 `ggplot2`。
+
+> (@) 為何寫成 `ggplot2::mpg`?兩個冒號`::`是什麼?
+
+告訴大家 `mpg` 是在 `ggplot2` 包。同理，`dplyr::select()` 告訴大家 `select()` 在 `dplyr` 包。暫時可以把 `::` 當作一種方法，代表取包裡的東西。當然你不能寫成 `ggplot2$mpg`，因為 `$` 是取資料的變數，比如 `mpg$cty`，是另外一種方法。
+
+> (@) 有推薦其他寫程式的好方法嗎?
+
+有，複製別人寫好的，貼上運行。因為我們要站在巨人的肩膀上。
+
+## `dplyr` 資料轉換 & `ggplot2` 資料視覺化
+
+資料轉換和資料視覺化的內容很豐富，所以會在未來的課程不斷的加入新的內容，持續堆疊下去。如果有不熟悉的地方，也許可以考慮複習一下先前教過的內容。
+
+## Wrangle with Data
+
+### Prerequisite
+
+```{r}
+# install.packages("tidyverse")
+library(tidyverse)
+```
+
+Tidyverse contains the packages you may need to use in data science, including ggplot2, dplyr, etc. So you do not need to install them individually.
+
+### Data
+
+```{r}
+ggplot2::mpg
+```
+
+`?ggplot2::mpg` # For more information
+
+Or you can simply call `?mpg` if you had already call the library.
+
+## `dplyr` 資料轉換
+
+未來的課程總共會涵蓋下列 `dplyr` 中的函數:
+
+  * `filter()` and `select()`
+  * `group_by()` and `ungroup()`
+  * `summarize()`and `summarise()`
+  * `arrange()` and `desc()`
+  * `mutate()`
+
+### Select columns with `select()`
+
+```{r, eval=FALSE}
+df <- select(mpg, manufacturer, cty, hwy, class)
+df
+summary(df)
+table(df %>% select(manufacturer, class))
+```
+
+```{r}
+df <- select(mpg, manufacturer, cty, hwy, class)
+df
+summary(df)
+table(df %>% select(manufacturer, class))
+```
+
+### Filter rows with `filter()`
+
+Logic "and"
+
+```{r}
+filter(df, class == "compact", cty < 20)
+```
+
+Logic "or"
+
+These three are equivalent.
+
+```{r, eval=FALSE}
+filter(df, class == "compact" | class == "suv")
+df %>% filter(class == "compact" | class == "suv")
+df %>% filter(class %in% c("compact", "suv"))
+```
+
+```{r}
+filter(df, class == "compact" | class == "suv")
+df %>% filter(class == "compact" | class == "suv")
+df %>% filter(class %in% c("compact", "suv"))
+```
+
+You can work this way!
+
+```{r}
+mpg %>%
+  select(manufacturer, cty, hwy, class) %>%
+  filter(class %in% c("compact", "suv"))
+```
+
+在挑出這些資料後，我們想比較不同製造商在其中兩種車型的市區油耗的平均值:
+
+分成兩步驟，分類與取平均值。
+
+**Step 1: 分類**
+
+```{r}
+mpg %>%
+  select(manufacturer, cty, hwy, class) %>%
+  filter(class %in% c("compact", "suv")) %>%
+  group_by(manufacturer, class)
+```
+
+可以看到 `Groups:   manufacturer, class [15]` 的訊息。
+
+`group_by()` 是對某個變數的值做分類。比如 `group_by(manufacturer, class)` 就是對製造商和車型做分類。
+
+仔細觀察資料的話，會發現並不是所有製造商都有這兩種車型被記錄在資料裡。
+
+```{r, echo=FALSE}
+df <- mpg %>%
+  select(manufacturer, cty, hwy, class) %>%
+  filter(class %in% c("compact", "suv")) %>%
+  group_by(manufacturer, class)
+datatable(df)
+```
+
+**Step 2: 取平均值**
+
+```{r}
+mpg %>%
+  select(manufacturer, cty, hwy, class) %>%
+  filter(class %in% c("compact", "suv")) %>%
+  group_by(manufacturer, class) %>%
+  summarise(avg = mean(cty))
+```
+
+`summarise()` 和 `summarize()` 功能一樣，純粹是英美式差異。
+
+`summarise()` 會整合成另一個資料框，`avg` 是變數名稱，
+`mean()` 是整合的方式，計算 `cty` 的平均值。
+
+可是想加入高速公路油耗進行比較，要怎麼辦呢?複製貼上，改 `cty` 為 `hwy` 是一種作法，但不是很高明。如果要把製造商的 `cty` 和 `hwy` 的平均值整理在一起又要再多一個步驟。
+
+這件事情可以用 `summarise()` 一次做完:
+
+```{r}
+mpg %>%
+  select(manufacturer, cty, hwy, class) %>%
+  filter(class %in% c("compact", "suv")) %>%
+  group_by(manufacturer) %>%
+  summarise(cty_avg = mean(cty), hwy_avg = mean(hwy))
+```
+
+可是現在沒辦法直接看出哪個製造商的平均油耗最高最低，我們想要排列資料:
+
+```{r}
+mpg %>%
+  select(manufacturer, cty, hwy, class) %>%
+  filter(class %in% c("compact", "suv")) %>%
+  group_by(manufacturer) %>%
+  summarise(cty_avg = mean(cty), hwy_avg = mean(hwy)) %>%
+  arrange(cty_avg)
+```
+
+`arrange()` **由小到大**排列 `cty_avg` 這個變數。
+希望油耗表現最好的排在第一位，就用 `desc()` 包住 `cty_avg`。
+
+```{r}
+mpg %>%
+  select(manufacturer, cty, hwy, class) %>%
+  filter(class %in% c("compact", "suv")) %>%
+  group_by(manufacturer) %>%
+  summarise(cty_avg = mean(cty), hwy_avg = mean(hwy)) %>%
+  arrange(desc(cty_avg))
+```
+
+市區油耗的表現都不如高速公路的油耗，可能是因為市區會一直塞車，走走停停，所以油耗表現比較差。但是差距有多少呢?
+
+```{r}
+mpg %>%
+  select(manufacturer, cty, hwy, class) %>%
+  filter(class %in% c("compact", "suv")) %>%
+  group_by(manufacturer) %>%
+  summarise(cty_avg = mean(cty), hwy_avg = mean(hwy)) %>%
+  mutate(difference = hwy_avg - cty_avg)
+```
+
+`mutate()` 新增變數，變數命名為 `difference`，是計算 
+`hwy_avg` 和 `cty_avg` 的差異，
+`-` 跟你想的應該一樣，代表減法。
+
+## `ggplot2` 資料視覺化
+
+```{r}
+ggplot(data = mpg) +
+  geom_point(mapping = aes(x = cty, y = hwy))
+```
+
+看到 `ggplot()` 代表要畫圖了，裡面第一個位置放資料 `mpg`。
+
+這裡的 `+` 可能跟你想的加法不一樣，
+接在 `ggplot2` 包的函數後面，
+就達到跟 `%>%` 相同的效果。
+所以你發現了嗎?這就是個坑，很可能不小心就寫錯。
+
+來看看 RStudio 首席工程師 Hadley 的看法:
+
+<center>
+
+![][p4]
+
+[p4]: fig_ggplot_pipe.PNG
+
+</center>
+
+```{r, eval=FALSE}
+ggplot(data = mpg) +
+  geom_point(mapping = aes(x = cty, y = hwy))
+```
+
+`geom_point()` 是畫點圖。
+
+`mapping()` 是指映射。
+
+`aes()` 是 asthetic 的簡稱，是美學的意思。
+`aes()` 放的是座標軸，順序是 `x` 軸 `y` 軸。
+通常會省略 `x`、`y`。
+
+通常會把函數的名稱省略，所以 `data`、`mapping`、`x`、`y` 都可以省略。但是不能更改他們擺放的順序。所以下面兩個是完全不同的映射方式。
+
+```{r, collapse=TRUE}
+ggplot(mpg) +
+  geom_point(aes(cty, hwy))
+
+ggplot(mpg) +
+  geom_point(aes(hwy, cty))
+```
+
+如果要畫兩種以上的圖，只要用 `+` 連接即可:
+
+```{r}
+ggplot(data = mpg, mapping = aes(x = cty, y = hwy)) +
+  geom_point() +
+  geom_smooth(method = lm)
+```
+
+`geom_smooth(method = lm)` 是指用線性迴歸畫圖，在此不深究這個問題。
+
+寫法有其他種類的變形，來比較一下:
+
+```{r, eval=FALSE}
+mpg %>%
+  ggplot(aes(cty, hwy)) +
+    geom_point()
+
+ggplot(mpg, aes(cty, hwy)) +
+  geom_point()
+
+ggplot(mpg) +
+  geom_point(aes(cty, hwy))
+
+mpg %>% 
+  ggplot() +
+    geom_point(aes(cty, hwy))
+```
+
+第一種是把資料擺在 `ggplot()` 外頭，再用 `%>%` 傳到下一步驟。
+
+第二種是把資料擺在 `ggplot()` 裡面。
+
+第三種把美學擺在畫圖的方式。
+
+或許你能寫出第四種，再想第五種...
+
+但是，別寫成這樣，是錯的:
+
+```{r, error=TRUE}
+ggplot(mpg, cty, hwy) +
+  geom_point()
+
+ggplot(mpg) +
+  geom_point(cty, hwy)
+```
+
+在回到剛才整理過的資料，現在要以視覺化的方式呈現，我們想看出市區與高速公路油耗的差異:
+
+```{r}
+mpg %>%
+  select(manufacturer, cty, hwy, class) %>%
+  filter(class %in% c("compact", "suv")) %>%
+  group_by(manufacturer) %>%
+  summarise(cty_avg = mean(cty), hwy_avg = mean(hwy)) %>%
+  mutate(difference = hwy_avg - cty_avg) %>%
+  ggplot() +
+  geom_col(aes(manufacturer, hwy_avg), 
+           alpha = 0.2, fill = "orange", color = "darkorange") +
+  geom_col(aes(manufacturer, difference), 
+           alpha = 0.3, fill = "violet", color = "purple") +
+  coord_flip() +
+  theme_classic()
+```
+
+`geom_col()` 和 `geom_boxplot()` 都適用於雙變數，一個離散，一個連續。也許你可以試著疊加盒鬚圖與長條圖。
+
+只要用顏色就能區分即可，所以使用 `difference` 比 `cty_avg` 更適當。
+
+當然可以自行嘗試使用 `cty_avg` 的後果。
+
+`alpha` 設定透明度。
+
+`fill` 填滿顏色。
+
+`color` 邊框顏色。
+
+受限於目前的講解內容，我們整理的資料尚未達到"齊整"，應該再做一些調整更容易做事。
+
+*齊整資料 : tidy data*
+
+
+# Homework
+
+## 10/17 Homework
+
+Wrangle with `ggplot2::mpg` and show the result.
+
+1. Select `manufacturer`, `year`, and `displ`.
+
+2. Filter `year` is 1999 and  `displ < 2`.
+
+Reference solution
+
+```{r, echo=FALSE}
+mpg %>% select(manufacturer, year, displ)
+
+mpg %>% 
+  select(manufacturer, year, displ) %>%
+  filter(year == 1999, displ < 2)
+```
+
+## 10/24 作業
+
+### 1. 請觀察下面兩種做法，**分別**說明會如何計算總數?
+
+其中 `n()` 是計算總數，命名為 `cars`。
+
+解除群組做法是用管線接一句 `ungroup()`，裡面不用再寫其他記號。
+
+```{r, eval=FALSE}
+df <- mpg %>%
+  select(manufacturer, cty, hwy, class) %>%
+  filter(class %in% c("compact", "suv")) %>%
+  group_by(manufacturer, class) 
+
+# 第一種沒有 ungroup
+df %>% summarise(cars = n())
+
+# 第二種有 ungroup
+df %>%
+  ungroup() %>%
+  summarise(cars = n())
+```
+
+### 2. 資料整理的方式如下，
+
+(1) 接著請畫出製造商在每種車型的市區油耗與高速公路油耗的盒鬚圖。
+(2) 說明 `coord_flip()` 可以解決的問題。
+(3) 說明你喜歡哪一種主題的作圖。比如範例是 `theme_classic()` 畫圖。
+
+提示: `geom_boxplot()` 的美學在 x 軸是離散的變數，y 軸是連續的變數
+
+當然 `color` 或是 `theme_*()` 都可以自行挑選喜歡的。
+`*` 為名稱代換的部分。
+
+```{r, eval=FALSE}
+mpg %>%
+  select(manufacturer, cty, hwy, class) %>%
+  filter(class %in% c("compact", "suv")) %>%
+  group_by(manufacturer, class) %>%
+  ggplot() +
+  geom_boxplot(mapping = aes(x = ___, y = ___), color = "violet") +
+  geom_boxplot(mapping = aes(x = ___, y = ___), color = "orange") +
+  coord_flip() +
+  theme_classic()
+```
+
+## 10/31 作業
+
+### 1. 比較 `compact` 和 `suv` 兩種車型在市區油耗與高速公路油耗的差異。
+
+### 2. 畫圖表現差異。
+
+```{r, echo=FALSE}
+mpg %>%
+  select(manufacturer, cty, hwy, class) %>%
+  filter(class %in% c("compact", "suv")) %>%
+  group_by(class) %>%
+  summarise(cty_avg = mean(cty), hwy_avg = mean(hwy)) %>%
+  mutate(difference = hwy_avg - cty_avg) %>%
+  ggplot() +
+  geom_col(aes(class, hwy_avg), 
+           alpha = 0.2, fill = "orange", color = "darkorange") +
+  geom_col(aes(class, difference), 
+           alpha = 0.3, fill = "violet", color = "purple") +
+  coord_flip() +
+  theme_classic()
+```
+
+
+# Other subjects
+
+##  迴圈、敘述統計、機率模型
+
+### 學習目標
+
+比較常態分佈
+
+1. 相同的平均值，不同的標準差
+
+2. 不同的平均值，相同的標準差
+
+## 資料框 data frame
+
+建立資料框
+
+**法一**
+
+```{r}
+df <- data.frame(a = 1:3, b = 4:6)
+```
+
+```{r, echo=FALSE}
+df
+```
+
+**法二**
+
+```{r}
+df <- data.frame(
+  matrix(1:6, nrow = 3))
+
+names(df) <- c("a", "b")
+```
+
+```{r, echo=FALSE}
+df
+```
+
+**法三**
+
+```{r}
+df <- data.frame(
+  matrix(0, nrow = 3, ncol = 2))
+
+df[[1]] <- 1:3
+df[[2]] <- 4:6
+```
+
+```{r, echo=FALSE}
+df
+```
+
+### 習題
+
+分別從 $N(\mu = 0, \sigma = 1)$、$N(\mu = 0, \sigma = 2)$、$N(\mu = 5, \sigma = 1)$ 抽出 1000 個樣本。
+
+其中，$N$ 表示常態分佈，$\mu$ 表示平均值，$\sigma$ 表示標準差。
+
+畫圖比較
+
+(1) 相同的平均值，不同的標準差
+
+(2) 不同的平均值，相同的標準差
+
+```{r, echo = FALSE}
+df <- data.frame(
+  matrix(0, nrow = 1000, ncol = 6))
+
+df[[1]] <- rnorm(1000, mean = 0, sd = 1)
+df[[2]] <- dnorm(df[[1]], mean = 0, sd = 1)
+df[[3]] <- rnorm(1000, mean = 0, sd = 2)
+df[[4]] <- dnorm(df[[3]], mean = 0, sd = 2)
+df[[5]] <- rnorm(1000, mean = 5, sd = 1)
+df[[6]] <- dnorm(df[[5]], mean = 5, sd = 1)
+
+plot(x = df[[1]], y = df[[2]], xlim = c(-3,3), ylim = c(0,0.5))
+par(new = T)
+plot(x = df[[3]], y = df[[4]], xlim = c(-3,3), ylim = c(0,0.5))
+plot(x = df[[1]], y = df[[2]], xlim = c(-3,8), ylim = c(0,0.5))
+par(new = T)
+plot(x = df[[5]], y = df[[6]], xlim = c(-3,8), ylim = c(0,0.5))
+```
+
+
+```{r}
+df <- data.frame(
+  matrix(0, nrow = 1000, ncol = 2))
+
+df[[1]] <- rnorm(n = 1000, mean = 0, sd = 1)
+df[[2]] <- dnorm(df[[1]], mean = 0, sd = 1)
+```
+
+`rnorm()` 隨機抽樣
+
+`dnorm()` 抽出樣本的機率
+
+```{r}
+plot(x = df[[1]], y = df[[2]])
+```
+
+依此類推，分別對三種分布抽出 1000 個樣本。
+
+```{r, eval=FALSE}
+df <- data.frame(
+  matrix(0, nrow = 1000, ncol = 6))
+
+df[[1]] <- rnorm(1000, mean = 0, sd = 1)
+df[[2]] <- dnorm(df[[1]], mean = 0, sd = 1)
+df[[3]] <- rnorm(____, mean = 0, sd = 2)
+df[[4]] <- dnorm(____, mean = 0, sd = 2)
+df[[5]] <- rnorm(____, mean = 5, sd = 1)
+df[[6]] <- dnorm(____, mean = 5, sd = 1)
+```
+
+知道函數 argument 的順序，可以省略 argument。
+
+```{r, eval=FALSE}
+# 這兩個一樣
+df[[1]] <- rnorm(1000, mean = 0, sd = 1)
+df[[1]] <- rnorm(1000, 0, 1)
+```
+
+```{r, echo = FALSE}
+df <- data.frame(
+  matrix(0, nrow = 1000, ncol = 6))
+
+df[[1]] <- rnorm(1000, mean = 0, sd = 1)
+df[[2]] <- dnorm(df[[1]], mean = 0, sd = 1)
+df[[3]] <- rnorm(1000, mean = 0, sd = 2)
+df[[4]] <- dnorm(df[[3]], mean = 0, sd = 2)
+df[[5]] <- rnorm(1000, mean = 5, sd = 1)
+df[[6]] <- dnorm(df[[5]], mean = 5, sd = 1)
+```
+
+第一小題，在比較相同的平均值，不同的標準差的時候，會需要疊圖，疊圖的方法是使用 `par(new = T)`，
+
+```{r}
+plot(x = df[[1]], y = df[[2]])
+par(new = T)
+plot(x = df[[3]], y = df[[4]])
+```
+
+但是尺度可能不一樣，用 `xlim()`，`ylim()` 限制範圍。
+
+```{r}
+plot(x = df[[1]], y = df[[2]], xlim = c(-3,3), ylim = c(0,0.5))
+par(new = T)
+plot(x = df[[3]], y = df[[4]], xlim = c(-3,3), ylim = c(0,0.5))
+```
+
+以此類推，第二小題，
+
+```{r, eval = FALSE}
+plot(x = df[[1]], y = df[[2]], xlim = c(__,__), ylim = c(__,__))
+par(new = T)
+plot(x = _______, y = _______, xlim = c(__,__), ylim = c(__,__))
+```
+
+## 統計圖表繪製
+
+### Review
+
+[Find the **Base R** cheetsheet](https://rstudio.com/resources/cheatsheets/)
+
+介紹進階的資料視覺化方法。
+
+```{r, echo = FALSE}
+df <- data.frame(
+  matrix(0, nrow = 1000, ncol = 6))
+
+df[[1]] <- rnorm(1000, mean = 0, sd = 1)
+df[[2]] <- dnorm(df[[1]], mean = 0, sd = 1)
+df[[3]] <- rnorm(1000, mean = 0, sd = 2)
+df[[4]] <- dnorm(df[[3]], mean = 0, sd = 2)
+df[[5]] <- rnorm(1000, mean = 5, sd = 1)
+df[[6]] <- dnorm(df[[5]], mean = 5, sd = 1)
+```
+
+### 學習目標
+
+介紹 `plot()` 和 `ggplot()` 的做法。
+
+### `plot()`
+
+```{r}
+df <- data.frame(
+  matrix(0, nrow = 1000, ncol = 2))
+
+df[[1]] <- rnorm(1000, mean = 0, sd = 1)
+df[[2]] <- dnorm(df[[1]], mean = 0, sd = 1)
+
+plot(x = df[[1]], y = df[[2]], 
+     xlim = c(-3,3), ylim = c(0,0.5))
+```
+
+```{r}
+head(df)
+```
+
+圖表標題，`main = "__"`，
+
+```{r}
+plot(x = df[[1]], y = df[[2]], 
+     xlim = c(-3,3), ylim = c(0,0.5),
+     main = "Normal distribution",
+     xlab = "x", ylab = "y")
+```
+
+更改坐標軸名稱，`xlab = "__"`，`ylab = "__"`，
+
+```{r}
+plot(x = df[[1]], y = df[[2]], 
+     xlim = c(-3,3), ylim = c(0,0.5),
+     xlab = "x", ylab = "y")
+```
+
+顏色 `col = "____"`，
+
+```{r}
+plot(x = df[[1]], y = df[[2]], 
+     xlim = c(-3,3), ylim = c(0,0.5),
+     col = "plum")
+```
+
+點的形狀 `pch = 20`，
+
+```{r}
+plot(x = df[[1]], y = df[[2]], 
+     xlim = c(-3,3), ylim = c(0,0.5),
+     pch = 20)
+```
+
+### `ggplot()`
+
+[Find the **Data Visualization Cheat Sheet**](https://rstudio.com/resources/cheatsheets/)
+
+```{r, eval = FALSE}
+install.packages("ggplot2")
+library(ggplot2)
+```
+
+```{r}
+head(df)
+```
+
+基本
+
+```{r}
+ggplot(data = df) +
+  geom_point(mapping = aes(X1, X2))
+```
+
+或者也可以寫成
+
+```{r}
+ggplot(df) +
+  geom_point(aes(X1, X2))
+```
+
+坐標軸名稱與圖表標題
+
+```{r}
+ggplot(data = df) +
+  geom_point(mapping = aes(X1, X2)) +
+  labs(x = "x", y = "y", title = "Normal distribution")
+```
+
+注意 argument 順序
+
+```{r}
+ggplot(df) +
+  geom_point(aes(X1, X2)) +
+  labs("Normal distribution", "x", "y")
+```
+
+座標軸範圍限制
+
+```{r}
+ggplot(data = df) +
+  geom_point(mapping = aes(X1, X2)) +
+  coord_cartesian(xlim = c(-3, 3), ylim = c(0, 0.5))
+```
+
+顏色
+
+```{r}
+ggplot(data = df) +
+  geom_point(mapping = aes(X1, X2), color = "orange") +
+  coord_cartesian(xlim = c(-3, 3), ylim = c(0, 0.5))
+```
+
+畫圖主題
+
+```{r}
+ggplot(data = df) +
+  geom_point(mapping = aes(X1, X2)) +
+  theme_classic()
+```
+
+疊圖方法
+
+```{r, eval=FALSE}
+ggplot(data = df) +
+  geom_point(mapping = aes(X1, X2)) +
+  geom_point(mapping = aes(X3, X4)) +
+  theme_classic()
+```
+
+### 習題
+
+進一步視覺化，包括 (1) 圖表標題 (2) 坐標軸名稱 (3) 顏色
+
+分別從 $N(\mu = 0, \sigma = 1)$、$N(\mu = 0, \sigma = 2)$、$N(\mu = 5, \sigma = 1)$ 抽出 1000 個樣本。
+
+其中，$N$ 表示常態分佈，$\mu$ 表示平均值，$\sigma$ 表示標準差。
+
+畫圖比較
+
+(1) 相同的平均值，不同的標準差
+
+(2) 不同的平均值，相同的標準差
+
+```{r, echo = FALSE}
+df <- data.frame(
+  matrix(0, nrow = 1000, ncol = 6))
+
+df[[1]] <- rnorm(1000, mean = 0, sd = 1)
+df[[2]] <- dnorm(df[[1]], mean = 0, sd = 1)
+df[[3]] <- rnorm(1000, mean = 0, sd = 2)
+df[[4]] <- dnorm(df[[3]], mean = 0, sd = 2)
+df[[5]] <- rnorm(1000, mean = 5, sd = 1)
+df[[6]] <- dnorm(df[[5]], mean = 5, sd = 1)
+
+ggplot(data = df) +
+  geom_point(mapping = aes(X1, X2), color = "plum") +
+  geom_point(mapping = aes(X3, X4), color = "red") +  
+  geom_point(mapping = aes(X5, X6), color = "orange") +
+  labs(x = "x", y = "y", title = "Normal distribution") +
+  coord_cartesian(xlim = c(-3, 8), ylim = c(0, 0.5)) +
+  theme_classic()
+```
+
+## 區間估計
+
+### 學習目標
+
+了解 `qnorm()` 和在 R 取"部分"的方法。
+
+```{r}
+qnorm(0, 0, 1)
+qnorm(0.25, 0, 1)
+qnorm(0.50, 0, 1)
+qnorm(0.75, 0, 1)
+qnorm(1, 0, 1)
+```
+
+從簡單的樣本出發，
+
+```{r}
+df <- data.frame(
+  matrix(0, nrow = 10, ncol = 2))
+
+df[[1]] <- rnorm(10, mean = 0, sd = 1)
+df[[2]] <- dnorm(df[[1]], mean = 0, sd = 1)
+```
+
+```{r, echo=FALSE}
+df
+```
+
+取出小於 25 百分位的樣本，注意逗點位置，
+
+```{r}
+df[df$X1 < qnorm(0.25, 0, 1),]
+df[df[[1]] < qnorm(0.25, 0, 1),]
+```
+
+兩個以上的條件，`&` 表示"且"，`|` 表示"或"，取出小於 25 百分位的樣本**或**大於 75百分位的樣本。
+
+```{r}
+df[df$X1 < qnorm(0.25, 0, 1) | df$X1 > qnorm(0.75, 0, 1),]
+```
+
+### 習題
+
+從 $N(\mu = 0, \sigma = 1)$ 抽出 1000 個樣本，找出其雙尾 95% 信賴區間，區間內的樣本以紅色表示。
+
+```{r, echo=FALSE}
+df <- data.frame(
+  matrix(0, nrow = 1000, ncol = 2))
+
+df[[1]] <- rnorm(1000, mean = 0, sd = 1)
+df[[2]] <- dnorm(df[[1]], mean = 0, sd = 1)
+CI <- df[df$X1 > qnorm(0.025, 0, 1) & df$X1 < qnorm(0.975, 0, 1),]
+
+plot(x = df[[1]], y = df[[2]], 
+     xlim = c(-3,3), ylim = c(0,0.5))
+par(new = T)
+plot(x = CI$X1, y = CI$X2, 
+     xlim = c(-3,3), ylim = c(0,0.5),
+     xlab = "", ylab = "",
+     col = "red")
+```
+
+
+
+

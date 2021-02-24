@@ -1,0 +1,222 @@
+---
+title: "TA_class_1024"
+author: "Hochia"
+date: 2019-10-17T21:13:14-05:00
+output: 
+  html_document:
+    toc: true
+    toc_float: true
+    toc_depth: 3
+categories: ["R"]
+tags: ["R Markdown", "tidyverse"]
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, comment = "#>", cache = TRUE)
+library(DT)
+```
+
+## 預備
+
+```{r,eval=FALSE}
+library(tidyverse)
+```
+
+## 包(Package)
+
+> (@) 為何要用其他的包，base R 不是也有嗎?比如畫圖，R base 有 `plot()`、`boxplot()` 等。為何要用 `ggplot2()`?
+
+為了彌補之前的漏洞，如果輕易的更動 base，
+會癱瘓過去做過的成品。為了避免類似的狀況，所以開發新的方法。
+
+包會整合容易混淆的作法，更一致的表達如何操作。
+
+可是這樣講還是很模糊，要講清楚變成講古。總之我們已經沒必要追究過去怎麼做，只需要與時俱進，學習最新的方法即可。
+
+
+> (@) 為何選 `tidyverse`?
+
+在呼叫 `tidyverse` 的時候會看到下面的資訊:
+
+```{r}
+library(tidyverse)
+```
+
+`tidyverse` 整合 `ggplot2`, `purrr`, `tibble`, `dplyr`, `tidyr`, `stringr`, `readr`, `forcats`，海羅了處理資料的基本方法。
+
+今天進一步介紹 `dplyr` ，還有開始使用 `ggplot2`。
+
+> (@) 為何寫成 `ggplot2::mpg`?兩個冒號`::`是什麼?
+
+告訴大家 `mpg` 是在 `ggplot2` 包。同理，`dplyr::select()` 告訴大家 `select()` 在 `dplyr` 包。暫時可以把 `::` 當作一種方法，代表取包裡的東西。當然你不能寫成 `ggplot2$mpg`，因為 `$` 是取資料的變數，比如 `mpg$cty`，是另外一種方法。
+
+> (@) 有推薦其他寫程式的好方法嗎?
+
+有，複製別人寫好的，貼上運行。因為我們要站在巨人的肩膀上。
+
+## `dplyr` 資料轉換 & `ggplot2` 資料視覺化
+
+資料轉換和資料視覺化的內容很豐富，所以會在未來的課程不斷的加入新的內容，持續堆疊下去。如果有不熟悉的地方，也許可以考慮複習一下先前教過的內容。
+
+### `dplyr` 資料轉換
+
+未來的課程總共會涵蓋下列 `dplyr` 中的函數:
+
+  * `filter()` and `select()`
+  * `group_by()` and `ungroup()`
+  * `summarize()`and `summarise()`
+  * `arrange()` and `desc()`
+  * `mutate()`
+
+回想上一次我們做過的:
+
+```{r}
+mpg %>%
+  select(manufacturer, cty, hwy, class) %>%
+  filter(class %in% c("compact", "suv"))
+```
+
+在挑出這些資料後，我們想比較不同製造商在其中兩種車型的市區油耗的平均值:
+
+分成兩步驟，分類與取平均值。
+
+**Step 1: 分類**
+
+```{r}
+mpg %>%
+  select(manufacturer, cty, hwy, class) %>%
+  filter(class %in% c("compact", "suv")) %>%
+  group_by(manufacturer, class)
+```
+
+可以看到 `Groups:   manufacturer, class [15]` 的訊息。
+
+`group_by()` 是對某個變數的值做分類。比如 `group_by(manufacturer, class)` 就是對製造商和車型做分類。
+
+仔細觀察資料的話，會發現並不是所有製造商都有這兩種車型被記錄在資料裡。
+
+```{r, echo=FALSE}
+df <- mpg %>%
+  select(manufacturer, cty, hwy, class) %>%
+  filter(class %in% c("compact", "suv")) %>%
+  group_by(manufacturer, class)
+datatable(df)
+```
+
+**Step 2: 取平均值**
+
+```{r}
+mpg %>%
+  select(manufacturer, cty, hwy, class) %>%
+  filter(class %in% c("compact", "suv")) %>%
+  group_by(manufacturer, class) %>%
+  summarise(avg = mean(cty))
+```
+
+`summarise()` 和 `summarize()` 功能一樣，純粹是英美式差異。
+
+`summarise()` 會整合成另一個資料框，`avg` 是變數名稱，
+`mean()` 是整合的方式，計算 `cty` 的平均值。
+
+### `ggplot2` 資料視覺化
+
+```{r}
+ggplot(data = mpg) +
+  geom_point(mapping = aes(x = cty, y = hwy))
+```
+
+看到 `ggplot()` 代表要畫圖了，裡面第一個位置放資料 `mpg`。
+
+這裡的 `+` 可能跟你想的加法不一樣，
+接在 `ggplot2` 包的函數後面，
+就達到跟 `%>%` 相同的效果。
+所以你發現了嗎?這就是個坑，很可能不小心就寫錯。
+
+來看看 RStudio 首席工程師 Hadley 的看法:
+
+<center>
+
+![][p0]
+
+[p0]: fig_ggplot_pipe.PNG
+
+</center>
+
+```{r, eval=FALSE}
+ggplot(data = mpg) +
+  geom_point(mapping = aes(x = cty, y = hwy))
+```
+
+`geom_point()` 是畫點圖。
+
+`mapping()` 是指映射。
+
+`aes()` 是 asthetic 的簡稱，是美學的意思。
+`aes()` 放的是座標軸，順序是 `x` 軸 `y` 軸。
+通常會省略 `x`、`y`。
+
+通常會把函數的名稱省略，所以 `data`、`mapping`、`x`、`y` 都可以省略。但是不能更改他們擺放的順序。所以下面兩個是完全不同的映射方式。
+
+```{r, collapse=TRUE}
+ggplot(mpg) +
+  geom_point(aes(cty, hwy))
+
+ggplot(mpg) +
+  geom_point(aes(hwy, cty))
+```
+
+如果要畫兩種以上的圖，只要用 `+` 連接即可:
+
+```{r}
+ggplot(data = mpg, mapping = aes(x = cty, y = hwy)) +
+  geom_point() +
+  geom_smooth(method = lm)
+```
+
+`geom_smooth(method = lm)` 是指用線性迴歸畫圖，在此不深究這個問題。
+
+## 作業
+
+### 1. 請觀察下面兩種做法，**分別**說明會如何計算總數?
+
+其中 `n()` 是計算總數，命名為 `cars`。
+
+解除群組做法是用管線接一句 `ungroup()`，裡面不用再寫其他記號。
+
+```{r, eval=FALSE}
+df <- mpg %>%
+  select(manufacturer, cty, hwy, class) %>%
+  filter(class %in% c("compact", "suv")) %>%
+  group_by(manufacturer, class) 
+
+# 第一種沒有 ungroup
+df %>% summarise(cars = n())
+
+# 第二種有 ungroup
+df %>%
+  ungroup() %>%
+  summarise(cars = n())
+```
+
+### 2. 資料整理的方式如下，
+
+(1) 接著請畫出製造商在每種車型的市區油耗與高速公路油耗的盒鬚圖。
+(2) 說明 `coord_flip()` 可以解決的問題。
+(3) 說明你喜歡哪一種主題的作圖。比如範例是 `theme_classic()` 畫圖。
+
+提示: `geom_boxplot()` 的美學在 x 軸是離散的變數，y 軸是連續的變數
+
+當然 `color` 或是 `theme_*()` 都可以自行挑選喜歡的。
+`*` 為名稱代換的部分。
+
+```{r, eval=FALSE}
+mpg %>%
+  select(manufacturer, cty, hwy, class) %>%
+  filter(class %in% c("compact", "suv")) %>%
+  group_by(manufacturer, class) %>%
+  ggplot() +
+  geom_boxplot(mapping = aes(x = ___, y = ___), color = "violet") +
+  geom_boxplot(mapping = aes(x = ___, y = ___), color = "orange") +
+  coord_flip() +
+  theme_classic()
+```

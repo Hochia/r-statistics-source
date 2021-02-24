@@ -1,0 +1,201 @@
+---
+title: "TA_class_1212"
+author: "Hochia"
+date: 2019-12-03T21:13:14-05:00
+output: 
+  html_document:
+    toc: true
+    toc_float: true
+    toc_depth: 3
+categories: ["R"]
+tags: ["R Markdown", "tidyverse"]
+---
+
+
+
+<div id="預備" class="section level2">
+<h2>預備</h2>
+<pre class="r"><code>library(tidyverse)</code></pre>
+</div>
+<div id="程式-t檢定" class="section level2">
+<h2>程式-t檢定</h2>
+<pre class="r"><code># S3 method for default
+t.test(x, y = NULL,
+       alternative = c(&quot;two.sided&quot;, &quot;less&quot;, &quot;greater&quot;),
+       mu = 0, paired = FALSE, var.equal = FALSE,
+       conf.level = 0.95, …)
+
+# S3 method for formula
+t.test(formula, data, subset, na.action, …)</code></pre>
+<div id="單組樣本" class="section level3">
+<h3>單組樣本</h3>
+<p>先透過畫圖與敘述統計量了解資料的樣貌。再進行假設檢定的步驟。</p>
+<pre class="r"><code>boxplot(mpg$cty)</code></pre>
+<p><img src="/post/20191203/TA_class_1212_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
+<pre class="r"><code>summary(mpg$cty)</code></pre>
+<pre><code>#&gt;    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+#&gt;    9.00   14.00   17.00   16.86   19.00   35.00</code></pre>
+<p><span class="math display">\[
+\begin{aligned} 
+\left\{ \begin{array}{ll} 
+H_0: &amp; \mu \geq 20\\
+H_1: &amp; \mu &lt; 20
+\end{array} \right.
+\end{aligned}
+\]</span></p>
+<pre class="r"><code>t.test(mpg$cty, alternative = &quot;less&quot;, mu = 20, conf.level = 0.99)</code></pre>
+<pre><code>#&gt; 
+#&gt;  One Sample t-test
+#&gt; 
+#&gt; data:  mpg$cty
+#&gt; t = -11.29, df = 233, p-value &lt; 2.2e-16
+#&gt; alternative hypothesis: true mean is less than 20
+#&gt; 99 percent confidence interval:
+#&gt;      -Inf 17.51069
+#&gt; sample estimates:
+#&gt; mean of x 
+#&gt;  16.85897</code></pre>
+<pre class="r"><code>hy.cty &lt;- t.test(mpg$cty, alternative = &quot;less&quot;, mu = 20, conf.level = 0.99)
+
+hy.cty</code></pre>
+<pre><code>#&gt; 
+#&gt;  One Sample t-test
+#&gt; 
+#&gt; data:  mpg$cty
+#&gt; t = -11.29, df = 233, p-value &lt; 2.2e-16
+#&gt; alternative hypothesis: true mean is less than 20
+#&gt; 99 percent confidence interval:
+#&gt;      -Inf 17.51069
+#&gt; sample estimates:
+#&gt; mean of x 
+#&gt;  16.85897</code></pre>
+<p><code>t.test()</code> 回傳的資料型態是屬於 list。在 Global Environment 可以見到 <code>hy.cty</code> 是 List of 10，點開來看，可以知道 list 每項的名稱。取值的方式如下:</p>
+<pre class="r"><code>hy.cty$p.value</code></pre>
+<pre><code>#&gt; [1] 3.65265e-24</code></pre>
+<pre class="r"><code>hy.cty[[3]]</code></pre>
+<pre><code>#&gt; [1] 3.65265e-24</code></pre>
+<pre class="r"><code>hy.cty$conf.int</code></pre>
+<pre><code>#&gt; [1]     -Inf 17.51069
+#&gt; attr(,&quot;conf.level&quot;)
+#&gt; [1] 0.99</code></pre>
+<pre class="r"><code>hy.cty[[4]]</code></pre>
+<pre><code>#&gt; [1]     -Inf 17.51069
+#&gt; attr(,&quot;conf.level&quot;)
+#&gt; [1] 0.99</code></pre>
+<pre class="r"><code>hy.cty$estimate</code></pre>
+<pre><code>#&gt; mean of x 
+#&gt;  16.85897</code></pre>
+<pre class="r"><code>hy.cty[[5]]</code></pre>
+<pre><code>#&gt; mean of x 
+#&gt;  16.85897</code></pre>
+</div>
+<div id="兩組樣本" class="section level3">
+<h3>兩組樣本</h3>
+<p>以市區油耗以及高速公路油耗為例。</p>
+<pre class="r"><code>df &lt;- mpg %&gt;%
+  select(cty,hwy) %&gt;%
+  gather(cty, hwy, key = &quot;mpg&quot;, value = &quot;value&quot;)
+
+ggplot(df) +
+  geom_boxplot(aes(mpg, value))</code></pre>
+<p><img src="/post/20191203/TA_class_1212_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
+<p>假設兩組樣本皆屬於常態分配的情況下，檢驗兩組樣本的變異數是否有顯著差異。</p>
+<pre class="r"><code># S3 method for default
+var.test(x, y, ratio = 1,
+         alternative = c(&quot;two.sided&quot;, &quot;less&quot;, &quot;greater&quot;),
+         conf.level = 0.95, …)
+
+# S3 method for formula
+var.test(formula, data, subset, na.action, …)</code></pre>
+<p>比如比較市區油耗以及高速公路油耗。</p>
+<pre class="r"><code>var.test(mpg$cty, mpg$hwy, ratio = 1,
+         alternative = &quot;two.sided&quot;,
+         conf.level = 0.90)</code></pre>
+<pre><code>#&gt; 
+#&gt;  F test to compare two variances
+#&gt; 
+#&gt; data:  mpg$cty and mpg$hwy
+#&gt; F = 0.51083, num df = 233, denom df = 233, p-value = 3.891e-07
+#&gt; alternative hypothesis: true ratio of variances is not equal to 1
+#&gt; 90 percent confidence interval:
+#&gt;  0.4116158 0.6339708
+#&gt; sample estimates:
+#&gt; ratio of variances 
+#&gt;           0.510835</code></pre>
+<p>因為 F-test 的 p-value 小於顯著水準 0.1，
+表示兩組樣本的變異數有顯著差異，因此 t-test 假設變異數不相等，設定 <code>var.equal = FALSE</code>。
+假如是成對樣本，設定 <code>paired = TRUE</code>，
+不是成對樣本，設定 <code>paired = FLASE</code>。</p>
+<pre class="r"><code># Paired t-test
+t.test(mpg$cty, mpg$hwy,
+       alternative = &quot;less&quot;,
+       mu = 0, paired = TRUE, var.equal = FALSE,
+       conf.level = 0.99)</code></pre>
+<pre><code>#&gt; 
+#&gt;  Paired t-test
+#&gt; 
+#&gt; data:  mpg$cty and mpg$hwy
+#&gt; t = -44.492, df = 233, p-value &lt; 2.2e-16
+#&gt; alternative hypothesis: true difference in means is less than 0
+#&gt; 99 percent confidence interval:
+#&gt;     -Inf -6.2347
+#&gt; sample estimates:
+#&gt; mean of the differences 
+#&gt;               -6.581197</code></pre>
+<pre class="r"><code># Welch Two Sample t-test
+t.test(mpg$cty, mpg$hwy,
+       alternative = &quot;less&quot;,
+       mu = 0, paired = FALSE, var.equal = FALSE,
+       conf.level = 0.99)</code></pre>
+<pre><code>#&gt; 
+#&gt;  Welch Two Sample t-test
+#&gt; 
+#&gt; data:  mpg$cty and mpg$hwy
+#&gt; t = -13.755, df = 421.79, p-value &lt; 2.2e-16
+#&gt; alternative hypothesis: true difference in means is less than 0
+#&gt; 99 percent confidence interval:
+#&gt;       -Inf -5.463859
+#&gt; sample estimates:
+#&gt; mean of x mean of y 
+#&gt;  16.85897  23.44017</code></pre>
+<p>也可以改寫成 formula 的形式，只是可能需要調整資料整理的方式。</p>
+<pre class="r"><code>t.test(value ~ mpg, data = df)</code></pre>
+<pre><code>#&gt; 
+#&gt;  Welch Two Sample t-test
+#&gt; 
+#&gt; data:  value by mpg
+#&gt; t = -13.755, df = 421.79, p-value &lt; 2.2e-16
+#&gt; alternative hypothesis: true difference in means is not equal to 0
+#&gt; 95 percent confidence interval:
+#&gt;  -7.521683 -5.640710
+#&gt; sample estimates:
+#&gt; mean in group cty mean in group hwy 
+#&gt;          16.85897          23.44017</code></pre>
+<p>注意 formula 放置離散與連續變數的位置。</p>
+</div>
+</div>
+<div id="作業" class="section level2">
+<h2>作業</h2>
+<p>假設檢定，單一樣本與成對樣本都各做一組，此外可以與上周自行打公式計算的結果比較。按照課本的六步驟回答。</p>
+<p>如果要使用 R markdown 的同學，
+假設檢定虛無假設與對立假設的寫法如下:</p>
+<pre><code>$$
+\begin{aligned} 
+\left\{ \begin{array}{ll} 
+H_0: &amp; \mu \geq 20\\
+H_1: &amp; \mu &lt; 20
+\end{array} \right.
+\end{aligned}
+$$</code></pre>
+<p><span class="math display">\[
+\begin{aligned} 
+\left\{ \begin{array}{ll} 
+H_0: &amp; \mu \geq 20\\
+H_1: &amp; \mu &lt; 20
+\end{array} \right.
+\end{aligned}
+\]</span></p>
+<p>大於等於的符號為 <code>\geq</code>。</p>
+<p>小於等於的符號為 <code>\leq</code>。</p>
+<p>更多內容可以參考維基百科 <a href="https://latex.wikia.org/wiki/List_of_LaTeX_symbols">Latex</a>。</p>
+</div>

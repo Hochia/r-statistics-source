@@ -1,0 +1,182 @@
+---
+title: "TA_class_1114"
+author: "Hochia"
+date: 2019-11-08T21:13:14-05:00
+output: 
+  html_document:
+    toc: true
+    toc_float: true
+    toc_depth: 3
+categories: ["R"]
+tags: ["R Markdown", "tidyverse"]
+---
+
+
+
+<div id="預備" class="section level2">
+<h2>預備</h2>
+<pre class="r"><code>library(tidyverse)</code></pre>
+</div>
+<div id="tidyr-齊整資料-ggplot2-資料視覺化" class="section level2">
+<h2><code>tidyr</code> 齊整資料 &amp; <code>ggplot2</code> 資料視覺化</h2>
+<p>回想上一次我們做過的:</p>
+<p>不同製造商的小型車在市區油耗和高速公路油耗的平均值，</p>
+<pre class="r"><code>mpg %&gt;%
+  select(manufacturer, cty, hwy, class) %&gt;%
+  filter(class == &quot;compact&quot;) %&gt;%
+  group_by(manufacturer) %&gt;%
+  summarise(cty_avg = mean(cty), hwy_avg = mean(hwy))</code></pre>
+<pre><code>#&gt; # A tibble: 5 x 3
+#&gt;   manufacturer cty_avg hwy_avg
+#&gt;   &lt;chr&gt;          &lt;dbl&gt;   &lt;dbl&gt;
+#&gt; 1 audi            17.9    26.9
+#&gt; 2 nissan          20      28  
+#&gt; 3 subaru          19.8    26  
+#&gt; 4 toyota          22.2    30.6
+#&gt; 5 volkswagen      20.8    28.5</code></pre>
+<p>將整理過的資料命名為 <code>df</code>，</p>
+<pre class="r"><code>df &lt;- mpg %&gt;%
+  select(manufacturer, cty, hwy, class) %&gt;%
+  filter(class == &quot;compact&quot;) %&gt;%
+  group_by(manufacturer) %&gt;%
+  summarise(cty_avg = mean(cty), hwy_avg = mean(hwy))</code></pre>
+<p>為了更有效的操作，會將資料的數個變數合併成新變數，在此我們先專注在資料輸出的樣子，還有畫圖的表現，再回頭解釋程式碼，比如:</p>
+<pre class="r"><code>df</code></pre>
+<pre><code>#&gt; # A tibble: 5 x 3
+#&gt;   manufacturer cty_avg hwy_avg
+#&gt;   &lt;chr&gt;          &lt;dbl&gt;   &lt;dbl&gt;
+#&gt; 1 audi            17.9    26.9
+#&gt; 2 nissan          20      28  
+#&gt; 3 subaru          19.8    26  
+#&gt; 4 toyota          22.2    30.6
+#&gt; 5 volkswagen      20.8    28.5</code></pre>
+<pre class="r"><code>df %&gt;% 
+  gather(cty_avg, hwy_avg, key = &quot;avg&quot;, value = &quot;value&quot;)</code></pre>
+<pre><code>#&gt; # A tibble: 10 x 3
+#&gt;    manufacturer avg     value
+#&gt;    &lt;chr&gt;        &lt;chr&gt;   &lt;dbl&gt;
+#&gt;  1 audi         cty_avg  17.9
+#&gt;  2 nissan       cty_avg  20  
+#&gt;  3 subaru       cty_avg  19.8
+#&gt;  4 toyota       cty_avg  22.2
+#&gt;  5 volkswagen   cty_avg  20.8
+#&gt;  6 audi         hwy_avg  26.9
+#&gt;  7 nissan       hwy_avg  28  
+#&gt;  8 subaru       hwy_avg  26  
+#&gt;  9 toyota       hwy_avg  30.6
+#&gt; 10 volkswagen   hwy_avg  28.5</code></pre>
+<pre class="r"><code>df %&gt;% 
+  gather(cty_avg, hwy_avg, key = &quot;avg&quot;, value = &quot;value&quot;) %&gt;%
+  ggplot() +
+  geom_col(aes(manufacturer, value)) +
+  facet_wrap(~ avg)</code></pre>
+<p><img src="/post/20191108/TA_class_1114_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
+<pre class="r"><code>df %&gt;% 
+  gather(cty_avg, hwy_avg, key = &quot;avg&quot;, value = &quot;value&quot;) %&gt;%
+  ggplot() +
+  geom_col(aes(avg, value)) +
+  facet_wrap(~ manufacturer, nrow = 1)</code></pre>
+<p><img src="/post/20191108/TA_class_1114_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
+<p>現在開始解釋程式碼。</p>
+<pre class="r"><code>df</code></pre>
+<pre><code>#&gt; # A tibble: 5 x 3
+#&gt;   manufacturer cty_avg hwy_avg
+#&gt;   &lt;chr&gt;          &lt;dbl&gt;   &lt;dbl&gt;
+#&gt; 1 audi            17.9    26.9
+#&gt; 2 nissan          20      28  
+#&gt; 3 subaru          19.8    26  
+#&gt; 4 toyota          22.2    30.6
+#&gt; 5 volkswagen      20.8    28.5</code></pre>
+<pre class="r"><code>df %&gt;% 
+  gather(cty_avg, hwy_avg, key = &quot;avg&quot;, value = &quot;value&quot;)</code></pre>
+<pre><code>#&gt; # A tibble: 10 x 3
+#&gt;    manufacturer avg     value
+#&gt;    &lt;chr&gt;        &lt;chr&gt;   &lt;dbl&gt;
+#&gt;  1 audi         cty_avg  17.9
+#&gt;  2 nissan       cty_avg  20  
+#&gt;  3 subaru       cty_avg  19.8
+#&gt;  4 toyota       cty_avg  22.2
+#&gt;  5 volkswagen   cty_avg  20.8
+#&gt;  6 audi         hwy_avg  26.9
+#&gt;  7 nissan       hwy_avg  28  
+#&gt;  8 subaru       hwy_avg  26  
+#&gt;  9 toyota       hwy_avg  30.6
+#&gt; 10 volkswagen   hwy_avg  28.5</code></pre>
+<p><code>gather</code> 將數個資料變數合併到新的變數，</p>
+<p>前面放所有要合併的變數名稱，此為 <code>cty_avg</code> 和 <code>hwy_avg</code>。</p>
+<p><code>key</code> 將新變數命名為 <code>avg</code>。</p>
+<p><code>value</code> 是原有變數的值，值放在另一個命名為 <code>value</code> 的新變數。</p>
+<pre class="r"><code>df %&gt;% 
+  gather(cty_avg, hwy_avg, key = &quot;avg&quot;, value = &quot;value&quot;) %&gt;%
+  ggplot() +
+  geom_col(aes(manufacturer, value)) +
+  facet_wrap(~ avg)</code></pre>
+<p><img src="/post/20191108/TA_class_1114_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
+<p>原有資料在合併變數後更易於畫圖，可以避免疊圖的寫法，省去不必要的麻煩。</p>
+<p>取代疊圖的方法是 <code>facet_wrap()</code>，facet 譯作面向，
+注意，面向只能針對離散的資料處理。</p>
+<p><code>facet_wrap()</code> 裡面的寫法是 <code>~</code> 接面向的變數名稱。</p>
+<pre class="r"><code>df %&gt;% 
+  gather(cty_avg, hwy_avg, key = &quot;avg&quot;, value = &quot;value&quot;) %&gt;%
+  ggplot() +
+  geom_col(aes(avg, value)) +
+  facet_wrap(~ manufacturer, nrow = 1)</code></pre>
+<p><img src="/post/20191108/TA_class_1114_files/figure-html/unnamed-chunk-9-1.png" width="672" /></p>
+<p>最一開始問的問題是<strong>不同製造商的小型車在市區油耗和高速公路油耗的平均值</strong>，顯然這時候面向的變數是製造商更為貼切。</p>
+<p>每個面向都會產生一張圖，圖片的排列上可以用行列控制。
+比如範例設定 <code>nrow = 1</code>，和設定 <code>ncol = 5</code> 相同。</p>
+<pre class="r"><code>df %&gt;% 
+  gather(cty_avg, hwy_avg, key = &quot;avg&quot;, value = &quot;value&quot;) %&gt;%
+  ggplot() +
+  geom_col(aes(avg, value)) +
+  facet_wrap(~ manufacturer, nrow = 1) +
+  coord_flip()</code></pre>
+<p><img src="/post/20191108/TA_class_1114_files/figure-html/unnamed-chunk-10-1.png" width="672" /></p>
+<p>也許你會想加上座標軸的翻轉，但你滿意這個結果嗎?</p>
+<pre class="r"><code>df %&gt;% 
+  gather(cty_avg, hwy_avg, key = &quot;avg&quot;, value = &quot;value&quot;) %&gt;%
+  ggplot() +
+  geom_col(aes(avg, value)) +
+  facet_wrap(~ manufacturer, nrow = 5) +
+  coord_flip()</code></pre>
+<p><img src="/post/20191108/TA_class_1114_files/figure-html/unnamed-chunk-11-1.png" width="672" /></p>
+<p>調整行列顯示的圖片數量即可。</p>
+</div>
+<div id="作業" class="section level2">
+<h2>作業</h2>
+<p>此指的 <code>df</code> 程式碼如下:</p>
+<pre class="r"><code>df &lt;- mpg %&gt;%
+  select(manufacturer, cty, hwy, class) %&gt;%
+  filter(class == &quot;compact&quot;) %&gt;%
+  group_by(manufacturer) %&gt;%
+  summarise(cty_avg = mean(cty), hwy_avg = mean(hwy))</code></pre>
+<div id="資料可以合併變數也可以展開變數spread-用於展開變數" class="section level3">
+<h3>1. 資料可以合併變數也可以展開變數。<code>spread()</code> 用於展開變數，</h3>
+<p><code>key</code> 接的變數的值，會成為展開的變數名稱。
+<code>value</code> 是對應展開變數的值。</p>
+<pre class="r"><code>df1 &lt;- df %&gt;% 
+  gather(cty_avg, hwy_avg, key = &quot;avg&quot;, value = &quot;value&quot;)
+
+df2 &lt;- df1 %&gt;%
+  spread(key = avg, value = value)</code></pre>
+<p>請問 <code>df2</code> 和 <code>df</code> 是完全相等的嗎?</p>
+<p>如果現在寫法改寫如下，<code>df4</code> 會和 <code>df3</code> 完全相等嗎?</p>
+<pre class="r"><code>df3 &lt;- df %&gt;%
+  select(cty_avg, hwy_avg, manufacturer)
+
+df4 &lt;- df3 %&gt;% 
+  gather(cty_avg, hwy_avg, key = &quot;avg&quot;, value = &quot;value&quot;) %&gt;%
+  spread(key = avg, value = value)</code></pre>
+</div>
+<div id="請畫出製造商在每種車型的市區油耗與高速公路油耗的盒鬚圖使用以下程式碼作答參考解答如圖" class="section level3">
+<h3>2. 請畫出製造商在每種車型的市區油耗與高速公路油耗的盒鬚圖。使用以下程式碼作答。參考解答如圖。</h3>
+<p><strong>知道嗎?</strong> mpg 表示 miles per gallon，正是 cty 和 hwy 的單位。</p>
+<pre class="r"><code>mpg %&gt;%
+  select(manufacturer, cty, hwy, class) %&gt;%
+  gather(___, ___, key = &quot;cty_hwy&quot;, value = ___) %&gt;%
+  ggplot() +
+  geom_boxplot(mapping = aes(x = ___, y = ___, color = cty_hwy)) +
+  facet_wrap(~___, ncol = ___)</code></pre>
+<p><img src="/post/20191108/TA_class_1114_files/figure-html/unnamed-chunk-16-1.png" width="672" /></p>
+</div>
+</div>

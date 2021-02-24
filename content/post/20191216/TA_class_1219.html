@@ -1,0 +1,389 @@
+---
+title: "TA_class_1219"
+author: "Hochia"
+date: 2019-12-16T21:13:14-05:00
+output: 
+  html_document:
+    toc: true
+    toc_float: true
+    toc_depth: 3
+categories: ["R"]
+tags: ["R Markdown", "tidyverse"]
+---
+
+
+
+<div id="預備" class="section level2">
+<h2>預備</h2>
+<pre class="r"><code>library(tidyverse)</code></pre>
+</div>
+<div id="程式-anova" class="section level2">
+<h2>程式-ANOVA</h2>
+<p>ANOVA 其中一種作法需要 <code>lm()</code> 和 <code>anova()</code> 兩個函數搭配操作。</p>
+<p>另外一種作法是用 <code>aov()</code> 搭配 <code>summary()</code> 函數。</p>
+<div id="one-way-anova" class="section level3">
+<h3>One-Way ANOVA</h3>
+<p>以 <code>iris</code> 資料為例:</p>
+<pre class="r"><code>ggplot(iris) +
+  geom_boxplot(aes(Species, Petal.Width, color = Species))</code></pre>
+<p><img src="/post/20191216/TA_class_1219_files/figure-html/unnamed-chunk-2-1.png" width="672" /></p>
+<pre class="r"><code># 法一
+iris.lm &lt;- lm(Petal.Width~Species, data = iris)
+iris.anova &lt;- anova(iris.lm)
+iris.anova</code></pre>
+<pre><code>#&gt; Analysis of Variance Table
+#&gt; 
+#&gt; Response: Petal.Width
+#&gt;            Df Sum Sq Mean Sq F value    Pr(&gt;F)    
+#&gt; Species     2 80.413  40.207  960.01 &lt; 2.2e-16 ***
+#&gt; Residuals 147  6.157   0.042                      
+#&gt; ---
+#&gt; Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<pre class="r"><code># 法二
+aov.method2 &lt;- aov(Petal.Width~Species, data = iris)
+summary(aov.method2)</code></pre>
+<pre><code>#&gt;              Df Sum Sq Mean Sq F value Pr(&gt;F)    
+#&gt; Species       2  80.41   40.21     960 &lt;2e-16 ***
+#&gt; Residuals   147   6.16    0.04                   
+#&gt; ---
+#&gt; Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<p>Species 總共有三個類別。計算如下:</p>
+<p>Df</p>
+<pre class="r"><code>3 - 1</code></pre>
+<pre><code>#&gt; [1] 2</code></pre>
+<p>Sum Square</p>
+<pre class="r"><code>df1 &lt;- iris %&gt;%
+  select(Species, Petal.Width) %&gt;%
+  group_by(Species) %&gt;%
+  summarise(mean = mean(Petal.Width), # 每個類別的平均值
+            sqare_error = sum((Petal.Width - mean) ^ 2))
+df1</code></pre>
+<pre><code>#&gt; # A tibble: 3 x 3
+#&gt;   Species     mean sqare_error
+#&gt;   &lt;fct&gt;      &lt;dbl&gt;       &lt;dbl&gt;
+#&gt; 1 setosa     0.246       0.544
+#&gt; 2 versicolor 1.33        1.92 
+#&gt; 3 virginica  2.03        3.70</code></pre>
+<pre class="r"><code>sum((df1$mean - mean(df1$mean)) ^ 2) * 50</code></pre>
+<pre><code>#&gt; [1] 80.41333</code></pre>
+<pre class="r"><code># 同理
+# var() 樣本變異數
+var(df1$mean) * (3 - 1) * 50</code></pre>
+<pre><code>#&gt; [1] 80.41333</code></pre>
+<pre class="r"><code># sd() 樣本標準差
+sd(df1$mean) ** 2 * (3 - 1) * 50</code></pre>
+<pre><code>#&gt; [1] 80.41333</code></pre>
+<p>Mean Square</p>
+<pre class="r"><code># Sum sq / Df
+80.413 / 2</code></pre>
+<pre><code>#&gt; [1] 40.2065</code></pre>
+<p>Residuals 的計算如下:</p>
+<p>Df</p>
+<pre class="r"><code>3 * (50 - 1)</code></pre>
+<pre><code>#&gt; [1] 147</code></pre>
+<p>Sum Square</p>
+<pre class="r"><code>sum(df1$sqare_error)</code></pre>
+<pre><code>#&gt; [1] 6.1566</code></pre>
+<p>Mean Square</p>
+<pre class="r"><code># Sum sq / Df
+6.157 / 147</code></pre>
+<pre><code>#&gt; [1] 0.04188435</code></pre>
+<p>F value 計算如下:</p>
+<pre class="r"><code>40.207 / 0.042 # 誤差大</code></pre>
+<pre><code>#&gt; [1] 957.3095</code></pre>
+<pre class="r"><code>(80.413 / 2) / (6.157 / 147) # 誤差小</code></pre>
+<pre><code>#&gt; [1] 959.9408</code></pre>
+<pre class="r"><code>SSB &lt;- sum((df1$mean - mean(df1$mean)) ^ 2) * 50
+SSW &lt;- sum(df1$sqare_error)
+(SSB / 2) / (SSW / 147) # 誤差更小</code></pre>
+<pre><code>#&gt; [1] 960.0071</code></pre>
+<p>F 分配的形狀:</p>
+<pre class="r"><code>x &lt;- rf(10000, 2, 147)
+y &lt;- df(x, 2, 147)
+plot(x, y)</code></pre>
+<p><img src="/post/20191216/TA_class_1219_files/figure-html/unnamed-chunk-12-1.png" width="672" /></p>
+<p>從上圖可以看出 F-value 大的時候，機率接近 0。因此 <span class="math inline">\(Pr(&gt;F) &lt; 2.2e-16\)</span></p>
+<pre class="r"><code>1 - pf(960.01, df1 = 2, df2 = 147) </code></pre>
+<pre><code>#&gt; [1] 0</code></pre>
+</div>
+<div id="two-way-anova" class="section level3">
+<h3>Two-Way ANOVA</h3>
+<p>參考上課講義的題目，我們可以自行輸入資料:</p>
+<pre class="r"><code>driver &lt;- c(&quot;Hamilton&quot;, &quot;Bottas&quot;, &quot;Verstappen&quot;, &quot;Leclerc&quot;, &quot;Vettle&quot;)
+data &lt;- tibble(driver = driver,
+               A = c(18, 16, 21, 23, 25),
+               B = c(17, 23, 21, 22, 24),
+               C = c(21, 23, 26, 29, 28),
+               D = c(22, 22, 22, 25, 28))
+
+data</code></pre>
+<pre><code>#&gt; # A tibble: 5 x 5
+#&gt;   driver         A     B     C     D
+#&gt;   &lt;chr&gt;      &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
+#&gt; 1 Hamilton      18    17    21    22
+#&gt; 2 Bottas        16    23    23    22
+#&gt; 3 Verstappen    21    21    26    22
+#&gt; 4 Leclerc       23    22    29    25
+#&gt; 5 Vettle        25    24    28    28</code></pre>
+<p>資料需要做轉換才有辦法做分析。</p>
+<pre class="r"><code>data2 &lt;- data %&gt;%
+  gather(-driver, key = &quot;road&quot;, value = &quot;time&quot;)
+
+data2</code></pre>
+<pre><code>#&gt; # A tibble: 20 x 3
+#&gt;    driver     road   time
+#&gt;    &lt;chr&gt;      &lt;chr&gt; &lt;dbl&gt;
+#&gt;  1 Hamilton   A        18
+#&gt;  2 Bottas     A        16
+#&gt;  3 Verstappen A        21
+#&gt;  4 Leclerc    A        23
+#&gt;  5 Vettle     A        25
+#&gt;  6 Hamilton   B        17
+#&gt;  7 Bottas     B        23
+#&gt;  8 Verstappen B        21
+#&gt;  9 Leclerc    B        22
+#&gt; 10 Vettle     B        24
+#&gt; 11 Hamilton   C        21
+#&gt; 12 Bottas     C        23
+#&gt; 13 Verstappen C        26
+#&gt; 14 Leclerc    C        29
+#&gt; 15 Vettle     C        28
+#&gt; 16 Hamilton   D        22
+#&gt; 17 Bottas     D        22
+#&gt; 18 Verstappen D        22
+#&gt; 19 Leclerc    D        25
+#&gt; 20 Vettle     D        28</code></pre>
+<p>可以從列聯表看出每個項目只有一個樣本。</p>
+<pre class="r"><code>table(data2$road, data2$driver)</code></pre>
+<pre><code>#&gt;    
+#&gt;     Bottas Hamilton Leclerc Verstappen Vettle
+#&gt;   A      1        1       1          1      1
+#&gt;   B      1        1       1          1      1
+#&gt;   C      1        1       1          1      1
+#&gt;   D      1        1       1          1      1</code></pre>
+<p>因為每個項目只有一個樣本，所以使用 <code>geom_point()</code> 畫圖，如果多於一個樣本，畫 <code>geom_boxplot()</code> 更為合適。</p>
+<pre class="r"><code>ggplot(data2, aes(road, time, color = driver)) +
+  geom_point()</code></pre>
+<p><img src="/post/20191216/TA_class_1219_files/figure-html/unnamed-chunk-17-1.png" width="672" /></p>
+<p>以下示範三種方法的程式碼:</p>
+<pre class="r"><code># 法一
+two.way.anova.1 &lt;- lm(time ~ road + driver, data = data2)
+twa.1 &lt;- anova(two.way.anova.1)
+
+# 法二
+two.way.anova.2 &lt;- aov(time ~ road + driver, data = data2)
+summary(two.way.anova.2)
+
+# 法三
+two.way.anova.3 &lt;- lm(data2$time ~ data2$road + data2$driver)
+anova(two.way.anova.3)</code></pre>
+<p>以下可以觀察到三種作法都會得到相同的結果，當然細心的同學會說小數點後取的位數稍有不同。</p>
+<p>法一: <code>lm()</code> 搭配 <code>anova()</code>，指定資料 <code>data = data2</code> 的寫法。</p>
+<pre class="r"><code>two.way.anova.1 &lt;- lm(time ~ road + driver, data = data2)
+twa.1 &lt;- anova(two.way.anova.1)
+twa.1$Df</code></pre>
+<pre><code>#&gt; [1]  3  4 12</code></pre>
+<pre class="r"><code>twa.1$`Sum Sq`</code></pre>
+<pre><code>#&gt; [1]  72.8 119.7  36.7</code></pre>
+<pre class="r"><code>twa.1$`Mean Sq`</code></pre>
+<pre><code>#&gt; [1] 24.266667 29.925000  3.058333</code></pre>
+<pre class="r"><code>twa.1$`F value`</code></pre>
+<pre><code>#&gt; [1] 7.934605 9.784741       NA</code></pre>
+<pre class="r"><code>twa.1$`Pr(&gt;F)`</code></pre>
+<pre><code>#&gt; [1] 0.0035079132 0.0009335737           NA</code></pre>
+<p>法二: <code>aov()</code> 搭配 <code>summary()</code>，指定資料 <code>data = data2</code> 的寫法。</p>
+<pre class="r"><code>two.way.anova.2 &lt;- aov(time ~ road + driver, data = data2)
+summary(two.way.anova.2)</code></pre>
+<pre><code>#&gt;             Df Sum Sq Mean Sq F value   Pr(&gt;F)    
+#&gt; road         3   72.8  24.267   7.935 0.003508 ** 
+#&gt; driver       4  119.7  29.925   9.785 0.000934 ***
+#&gt; Residuals   12   36.7   3.058                     
+#&gt; ---
+#&gt; Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<p>法三: <code>lm()</code> 搭配 <code>anova()</code>，不指定資料，變數取值的寫法。</p>
+<pre class="r"><code>two.way.anova.3 &lt;- lm(data2$time ~ data2$road + data2$driver)
+anova(two.way.anova.3)</code></pre>
+<pre><code>#&gt; Analysis of Variance Table
+#&gt; 
+#&gt; Response: data2$time
+#&gt;              Df Sum Sq Mean Sq F value    Pr(&gt;F)    
+#&gt; data2$road    3   72.8 24.2667  7.9346 0.0035079 ** 
+#&gt; data2$driver  4  119.7 29.9250  9.7847 0.0009336 ***
+#&gt; Residuals    12   36.7  3.0583                      
+#&gt; ---
+#&gt; Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<div id="考慮交互作用" class="section level4">
+<h4>考慮交互作用</h4>
+<p><strong>注意，這裡的資料與前面不同。</strong></p>
+<pre class="r"><code>#交互作用
+driver &lt;- c(&quot;Hamilton&quot;, &quot;Bottas&quot;, &quot;Verstappen&quot;, &quot;Leclerc&quot;, &quot;Vettle&quot;)
+data.int &lt;- tibble(driver = factor(rep(driver, each = 3), level = driver),
+                   A = c(18, 15, 21, 16, 19, 13, 21, 19, 14, 23, 21, 25, 25, 24, 26),
+                   B = c(17, 14, 20, 23, 19, 25, 21, 23, 25, 22, 24, 20, 24, 25, 23),
+                   C = c(21, 20, 22, 23, 24, 22, 26, 24, 28, 29, 30, 28, 28, 29, 27),
+                   D = c(22, 19, 25, 22, 20, 24, 22, 24, 20, 25, 20, 26, 28, 30, 26))
+
+data.int</code></pre>
+<pre><code>#&gt; # A tibble: 15 x 5
+#&gt;    driver         A     B     C     D
+#&gt;    &lt;fct&gt;      &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
+#&gt;  1 Hamilton      18    17    21    22
+#&gt;  2 Hamilton      15    14    20    19
+#&gt;  3 Hamilton      21    20    22    25
+#&gt;  4 Bottas        16    23    23    22
+#&gt;  5 Bottas        19    19    24    20
+#&gt;  6 Bottas        13    25    22    24
+#&gt;  7 Verstappen    21    21    26    22
+#&gt;  8 Verstappen    19    23    24    24
+#&gt;  9 Verstappen    14    25    28    20
+#&gt; 10 Leclerc       23    22    29    25
+#&gt; 11 Leclerc       21    24    30    20
+#&gt; 12 Leclerc       25    20    28    26
+#&gt; 13 Vettle        25    24    28    28
+#&gt; 14 Vettle        24    25    29    30
+#&gt; 15 Vettle        26    23    27    26</code></pre>
+<pre class="r"><code>data2.int &lt;- data.int %&gt;%
+  gather(-driver, key = &quot;road&quot;, value = &quot;time&quot;)
+
+data2.int</code></pre>
+<pre><code>#&gt; # A tibble: 60 x 3
+#&gt;    driver     road   time
+#&gt;    &lt;fct&gt;      &lt;chr&gt; &lt;dbl&gt;
+#&gt;  1 Hamilton   A        18
+#&gt;  2 Hamilton   A        15
+#&gt;  3 Hamilton   A        21
+#&gt;  4 Bottas     A        16
+#&gt;  5 Bottas     A        19
+#&gt;  6 Bottas     A        13
+#&gt;  7 Verstappen A        21
+#&gt;  8 Verstappen A        19
+#&gt;  9 Verstappen A        14
+#&gt; 10 Leclerc    A        23
+#&gt; # ... with 50 more rows</code></pre>
+<p>我們先計算路線平均時間，駕駛平均時間以及總平均時間。</p>
+<pre class="r"><code># 路線平均
+mfr &lt;- data2.int %&gt;%
+  group_by(road) %&gt;%
+  summarise(means_for_route = mean(time))
+
+mfr</code></pre>
+<pre><code>#&gt; # A tibble: 4 x 2
+#&gt;   road  means_for_route
+#&gt;   &lt;chr&gt;           &lt;dbl&gt;
+#&gt; 1 A                20  
+#&gt; 2 B                21.7
+#&gt; 3 C                25.4
+#&gt; 4 D                23.5</code></pre>
+<pre class="r"><code># 駕駛平均
+mfd &lt;- data2.int %&gt;%
+  group_by(driver) %&gt;%
+  summarise(means_for_driver = mean(time))
+
+mfd</code></pre>
+<pre><code>#&gt; # A tibble: 5 x 2
+#&gt;   driver     means_for_driver
+#&gt;   &lt;fct&gt;                 &lt;dbl&gt;
+#&gt; 1 Hamilton               19.5
+#&gt; 2 Bottas                 20.8
+#&gt; 3 Verstappen             22.2
+#&gt; 4 Leclerc                24.4
+#&gt; 5 Vettle                 26.2</code></pre>
+<pre class="r"><code># 總平均
+mean(data2.int$time)</code></pre>
+<pre><code>#&gt; [1] 22.65</code></pre>
+<p>如果用列連表的形式，可以看出每位駕駛在每條路線都進行三次實驗。</p>
+<pre class="r"><code>table(data2.int$road, data2.int$driver)</code></pre>
+<pre><code>#&gt;    
+#&gt;     Hamilton Bottas Verstappen Leclerc Vettle
+#&gt;   A        3      3          3       3      3
+#&gt;   B        3      3          3       3      3
+#&gt;   C        3      3          3       3      3
+#&gt;   D        3      3          3       3      3</code></pre>
+<p>接著我們畫交互作用，也就是依照每位駕駛在每條路線的平均時間。</p>
+<pre class="r"><code># 畫圖
+data2.int %&gt;%
+  group_by(driver, road) %&gt;%
+  summarise(time = mean(time)) %&gt;%
+  ggplot(aes(road, time, color = driver)) +
+  geom_point() +
+  geom_line(aes(group = driver))</code></pre>
+<p><img src="/post/20191216/TA_class_1219_files/figure-html/unnamed-chunk-25-1.png" width="672" /></p>
+<p>考慮交互作用的假設檢定如下:</p>
+<p><span class="math display">\[
+\begin{aligned} 
+\left\{ \begin{array}{ll} 
+H_0: 駕駛與路線之間沒有交互作用\\
+H_1: 駕駛與路線之間存在交互作用
+\end{array} \right.
+\end{aligned}
+\]</span></p>
+<p>考慮交互作用的 two-way ANOVA 在 formula 有兩種寫法:
+一種是把 <code>+</code> 改成 <code>*</code>，例如 <code>time ~ road * driver</code>；
+另一種是 <code>:</code> 連接兩因子，例如 <code>time ~ road + driver + road:driver</code>。</p>
+<pre class="r"><code># two-way ANOVA, consider interaction
+two.way.anova.interaction &lt;- 
+  aov(time ~ road * driver, data = data2.int)
+twa.int &lt;- summary(two.way.anova.interaction)
+twa.int</code></pre>
+<pre><code>#&gt;             Df Sum Sq Mean Sq F value   Pr(&gt;F)    
+#&gt; road         3  245.0   81.66  15.908 5.84e-07 ***
+#&gt; driver       4  353.6   88.39  17.219 2.74e-08 ***
+#&gt; road:driver 12  125.8   10.48   2.042   0.0456 *  
+#&gt; Residuals   40  205.3    5.13                     
+#&gt; ---
+#&gt; Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<p>假如不拒絕虛無假設，可驗證兩因子個別的影響，回到 one-way ANOVA。</p>
+<p><span class="math display">\[
+\begin{aligned} 
+\left\{ \begin{array}{ll} 
+H_0: 駕駛的平均時間完全相同\\
+H_1: 駕駛的平均時間不全相同
+\end{array} \right.
+\end{aligned}
+\]</span></p>
+<pre class="r"><code># 路線 A
+data2.int %&gt;%
+  filter(road == &quot;A&quot;) %&gt;%
+  aov(time ~ driver, data = .) %&gt;%
+  summary()</code></pre>
+<pre><code>#&gt;             Df Sum Sq Mean Sq F value  Pr(&gt;F)   
+#&gt; driver       4    174    43.5   6.042 0.00974 **
+#&gt; Residuals   10     72     7.2                   
+#&gt; ---
+#&gt; Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<pre class="r"><code># 路線 B
+data2.int %&gt;%
+  filter(road == &quot;B&quot;) %&gt;%
+  aov(time ~ driver, data = .) %&gt;%
+  summary()</code></pre>
+<pre><code>#&gt;             Df Sum Sq Mean Sq F value Pr(&gt;F)  
+#&gt; driver       4  88.67  22.167   4.055  0.033 *
+#&gt; Residuals   10  54.67   5.467                 
+#&gt; ---
+#&gt; Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<pre class="r"><code># 同理，自行練習路線 C 和 D</code></pre>
+<p><span class="math display">\[
+\begin{aligned} 
+\left\{ \begin{array}{ll} 
+H_0: 路線的平均時間完全相同\\
+H_1: 路線的平均時間不全相同
+\end{array} \right.
+\end{aligned}
+\]</span></p>
+<pre class="r"><code># 駕駛 Hamilton
+data2.int %&gt;%
+  filter(driver == &quot;Hamilton&quot;) %&gt;%
+  aov(time ~ road, data = .) %&gt;%
+  summary()</code></pre>
+<pre><code>#&gt;             Df Sum Sq Mean Sq F value Pr(&gt;F)
+#&gt; road         3     51      17   2.429   0.14
+#&gt; Residuals    8     56       7</code></pre>
+<pre class="r"><code># 同理，自行練習其他駕駛</code></pre>
+</div>
+</div>
+</div>
+<div id="作業" class="section level2">
+<h2>作業</h2>
+<p>使用手邊的資料進行 ANOVA 分析。
+One-way 和 Two-way 都做一題，練習看看。</p>
+</div>

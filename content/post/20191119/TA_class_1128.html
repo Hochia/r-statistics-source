@@ -1,0 +1,343 @@
+---
+title: "TA_class_1128"
+author: "Hochia"
+date: 2019-11-19T21:13:14-05:00
+output: 
+  html_document:
+    toc: true
+    toc_float: true
+    toc_depth: 3
+categories: ["R"]
+tags: ["R Markdown", "tidyverse"]
+---
+
+
+
+<div id="預備" class="section level2">
+<h2>預備</h2>
+<pre class="r"><code>library(tidyverse)</code></pre>
+</div>
+<div id="資料匯入與匯出" class="section level2">
+<h2>資料匯入與匯出</h2>
+<p>不同格式的檔案需要用相對應的 package 來處理匯入與匯出，比如 <code>tidyverse</code> 裡的 <code>readr</code> 只適用於 <code>.txt</code> 和 <code>.csv</code> 檔案。</p>
+<p><code>readxl</code> 可以處理 <code>.xls</code> 和 <code>.xlsx</code> 檔案。</p>
+<p>數據可能是以不同的分隔符號紀錄在檔案裡，需要用相對應的函數來處理。比如最常見的三種是逗號(,)分隔，分號(;)分隔，以及 Tab 分隔。</p>
+<pre class="r"><code># comma separated
+import.data &lt;- readr::read_csv(&quot;file_name.csv&quot;)
+# semicolon separated
+import.data &lt;- readr::read_csv2(&quot;file_name.csv&quot;)
+# tab separated
+import.data &lt;- readr::read_tsv(&quot;file_name.csv&quot;)</code></pre>
+<p>以 CPS 資料為例，如果下載 <code>.txt</code> 格式。</p>
+<pre class="r"><code># .txt file
+cps &lt;- read_tsv(&quot;cps09mar.txt&quot;, col_names = FALSE) # 匯入的資料並沒有變數名稱，且以 tab 分隔
+write_csv(cps, &quot;output.txt&quot;) # 匯出會自動新增變數名稱，並以逗號分隔
+read_csv(&quot;output.txt&quot;) # 因為是逗號分隔，所以讀取資料時，改成用 read_csv()</code></pre>
+<p>如果下載 <code>.xlsx</code> 格式。使用 <code>readxl</code> package 處理。</p>
+<pre class="r"><code># install.packages(&quot;readxl&quot;)
+library(readxl)
+
+cps &lt;- read_xlsx(&quot;cps09mar.xlsx&quot;)
+write_csv(cps, &quot;output.csv&quot;) # 匯出以 csv 格式儲存</code></pre>
+<p>如果要儲存 R 跑完的資料，使用 <code>save()</code>，放物件名稱，並指定存入的檔名，小心副檔名不要打錯。
+<code>load()</code> 指定讀入的檔案，可以觀察到 Environment 出現儲存的物件名稱。</p>
+<pre class="r"><code>df1 &lt;- mpg
+df2 &lt;- msleep
+df3 &lt;- txhousing
+
+save(df1, df2, df3,  
+     file = &quot;mydata.RData&quot;)
+
+load(&quot;mydata.RData&quot;)</code></pre>
+</div>
+<div id="缺失值" class="section level2">
+<h2>缺失值</h2>
+<p>以 ggplot2::msleep 為例，有許多變數的觀測值並沒有被紀錄。</p>
+<pre class="r"><code>ggplot2::msleep</code></pre>
+<pre><code>#&gt; # A tibble: 83 x 11
+#&gt;    name  genus vore  order conservation sleep_total sleep_rem sleep_cycle
+#&gt;    &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt;              &lt;dbl&gt;     &lt;dbl&gt;       &lt;dbl&gt;
+#&gt;  1 Chee~ Acin~ carni Carn~ lc                  12.1      NA        NA    
+#&gt;  2 Owl ~ Aotus omni  Prim~ &lt;NA&gt;                17         1.8      NA    
+#&gt;  3 Moun~ Aplo~ herbi Rode~ nt                  14.4       2.4      NA    
+#&gt;  4 Grea~ Blar~ omni  Sori~ lc                  14.9       2.3       0.133
+#&gt;  5 Cow   Bos   herbi Arti~ domesticated         4         0.7       0.667
+#&gt;  6 Thre~ Brad~ herbi Pilo~ &lt;NA&gt;                14.4       2.2       0.767
+#&gt;  7 Nort~ Call~ carni Carn~ vu                   8.7       1.4       0.383
+#&gt;  8 Vesp~ Calo~ &lt;NA&gt;  Rode~ &lt;NA&gt;                 7        NA        NA    
+#&gt;  9 Dog   Canis carni Carn~ domesticated        10.1       2.9       0.333
+#&gt; 10 Roe ~ Capr~ herbi Arti~ lc                   3        NA        NA    
+#&gt; # ... with 73 more rows, and 3 more variables: awake &lt;dbl&gt;, brainwt &lt;dbl&gt;,
+#&gt; #   bodywt &lt;dbl&gt;</code></pre>
+<p>使用 <code>dplyr::drop_na()</code> 可以將有遺漏的數據整筆刪除。</p>
+<pre class="r"><code>df &lt;- msleep %&gt;% drop_na()
+df</code></pre>
+<pre><code>#&gt; # A tibble: 20 x 11
+#&gt;    name  genus vore  order conservation sleep_total sleep_rem sleep_cycle
+#&gt;    &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt;              &lt;dbl&gt;     &lt;dbl&gt;       &lt;dbl&gt;
+#&gt;  1 Grea~ Blar~ omni  Sori~ lc                  14.9       2.3       0.133
+#&gt;  2 Cow   Bos   herbi Arti~ domesticated         4         0.7       0.667
+#&gt;  3 Dog   Canis carni Carn~ domesticated        10.1       2.9       0.333
+#&gt;  4 Guin~ Cavis herbi Rode~ domesticated         9.4       0.8       0.217
+#&gt;  5 Chin~ Chin~ herbi Rode~ domesticated        12.5       1.5       0.117
+#&gt;  6 Less~ Cryp~ omni  Sori~ lc                   9.1       1.4       0.15 
+#&gt;  7 Long~ Dasy~ carni Cing~ lc                  17.4       3.1       0.383
+#&gt;  8 Nort~ Dide~ omni  Dide~ lc                  18         4.9       0.333
+#&gt;  9 Big ~ Epte~ inse~ Chir~ lc                  19.7       3.9       0.117
+#&gt; 10 Horse Equus herbi Peri~ domesticated         2.9       0.6       1    
+#&gt; 11 Euro~ Erin~ omni  Erin~ lc                  10.1       3.5       0.283
+#&gt; 12 Dome~ Felis carni Carn~ domesticated        12.5       3.2       0.417
+#&gt; 13 Gold~ Meso~ herbi Rode~ en                  14.3       3.1       0.2  
+#&gt; 14 Hous~ Mus   herbi Rode~ nt                  12.5       1.4       0.183
+#&gt; 15 Rabb~ Oryc~ herbi Lago~ domesticated         8.4       0.9       0.417
+#&gt; 16 Labo~ Ratt~ herbi Rode~ lc                  13         2.4       0.183
+#&gt; 17 East~ Scal~ inse~ Sori~ lc                   8.4       2.1       0.167
+#&gt; 18 Thir~ Sper~ herbi Rode~ lc                  13.8       3.4       0.217
+#&gt; 19 Pig   Sus   omni  Arti~ domesticated         9.1       2.4       0.5  
+#&gt; 20 Braz~ Tapi~ herbi Peri~ vu                   4.4       1         0.9  
+#&gt; # ... with 3 more variables: awake &lt;dbl&gt;, brainwt &lt;dbl&gt;, bodywt &lt;dbl&gt;</code></pre>
+<p>也可以針對某些變數的缺失值做處理。</p>
+<pre class="r"><code>df2 &lt;- msleep %&gt;% drop_na(sleep_rem)
+df2</code></pre>
+<pre><code>#&gt; # A tibble: 61 x 11
+#&gt;    name  genus vore  order conservation sleep_total sleep_rem sleep_cycle
+#&gt;    &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt;              &lt;dbl&gt;     &lt;dbl&gt;       &lt;dbl&gt;
+#&gt;  1 Owl ~ Aotus omni  Prim~ &lt;NA&gt;                17         1.8      NA    
+#&gt;  2 Moun~ Aplo~ herbi Rode~ nt                  14.4       2.4      NA    
+#&gt;  3 Grea~ Blar~ omni  Sori~ lc                  14.9       2.3       0.133
+#&gt;  4 Cow   Bos   herbi Arti~ domesticated         4         0.7       0.667
+#&gt;  5 Thre~ Brad~ herbi Pilo~ &lt;NA&gt;                14.4       2.2       0.767
+#&gt;  6 Nort~ Call~ carni Carn~ vu                   8.7       1.4       0.383
+#&gt;  7 Dog   Canis carni Carn~ domesticated        10.1       2.9       0.333
+#&gt;  8 Goat  Capri herbi Arti~ lc                   5.3       0.6      NA    
+#&gt;  9 Guin~ Cavis herbi Rode~ domesticated         9.4       0.8       0.217
+#&gt; 10 Griv~ Cerc~ omni  Prim~ lc                  10         0.7      NA    
+#&gt; # ... with 51 more rows, and 3 more variables: awake &lt;dbl&gt;, brainwt &lt;dbl&gt;,
+#&gt; #   bodywt &lt;dbl&gt;</code></pre>
+</div>
+<div id="符號意義" class="section level2">
+<h2>符號意義</h2>
+<p><span class="math inline">\(\sim\)</span>: is distributed as</p>
+<p><span class="math inline">\(\Phi(\cdot)\)</span>: 標準常態分配的累積機率函數</p>
+<p><span class="math inline">\(\Phi^{-1}(\cdot)\)</span>: 標準常態分配的 quantile 函數</p>
+<p>note that:</p>
+<p><span class="math inline">\(\Phi(-c) = 1 - \Phi(c) = \alpha\)</span></p>
+<p><span class="math inline">\(c = -\Phi^{-1}(\alpha) = \Phi^{-1}(1 - \alpha)\)</span></p>
+<p><span class="math inline">\(T_n(\cdot)\)</span>: t 分配，自由度 n 的累積機率函數</p>
+<p><span class="math inline">\(T^{-1}_n(\cdot)\)</span>: t 分配，自由度 n 的 quantile 函數</p>
+<p>note that:</p>
+<p><span class="math inline">\(T_n(-c) = 1 - T_n(c) = \alpha\)</span></p>
+<p><span class="math inline">\(c = -T_n^{-1}(\alpha) = T_n^{-1}(1 - \alpha)\)</span></p>
+</div>
+<div id="標準常態分配與-t-分配" class="section level2">
+<h2>標準常態分配與 t 分配</h2>
+<p><img src="/post/20191119/TA_class_1128_files/figure-html/unnamed-chunk-9-1.png" width="672" /></p>
+</div>
+<div id="信賴區間" class="section level2 tabset tabset-pills tabset-fade">
+<h2>信賴區間</h2>
+<ol style="list-style-type: decimal">
+<li>單一母體平均數的區間估計</li>
+</ol>
+<p>假設母體常態分配，以 <span class="math inline">\(95\%\)</span> 信賴區間，雙尾檢定為例。</p>
+<div id="母體變異數已知" class="section level3">
+<h3>母體變異數已知</h3>
+<p><span class="math display">\[
+\begin{aligned}
+&amp;X_1, X_2,\dots, X_n \sim N(\mu, \sigma^2)\\\\
+&amp;\frac{\bar X_n - \mu}{\frac{\sigma}{\sqrt n}} \sim N(0,1)\\\\
+&amp;c = -\Phi^{-1}(0.025) = \Phi^{-1}(0.975)\\\\
+&amp;0.95 = P(-c &lt; \frac{\bar X_n - \mu}{\frac{\sigma}{\sqrt n}} &lt; c)\\\\
+&amp;0.95 = P(\bar X_n - c\frac{\sigma}{\sqrt{n}} 
+&lt; \mu 
+&lt; \bar X_n + c\frac{\sigma}{\sqrt{n}})
+\end{aligned}
+\]</span></p>
+<p>在母體常態分配，平均值為 0, 標準差為 2，隨機抽出 100 個樣本，找出此次抽樣的信賴區間，並畫圖表示。</p>
+<pre class="r"><code># 隨機抽樣
+random.sample = rnorm(n = 100, mean = 0, sd = 2)
+# 樣本平均數
+sample.mean &lt;- mean(random.sample)
+sample.mean</code></pre>
+<pre><code>#&gt; [1] 0.005825125</code></pre>
+<pre class="r"><code># 標準常態分配 2.5% 和 97.5% 的位置
+z_0.025 &lt;- qnorm(0.025, mean = 0, sd = 1)
+z_0.975 &lt;- qnorm(0.975, mean = 0, sd = 1)
+round(c(z_0.025, z_0.975), 2)</code></pre>
+<pre><code>#&gt; [1] -1.96  1.96</code></pre>
+<pre class="r"><code>const &lt;- z_0.975
+# 信賴區間
+lower &lt;- sample.mean - const * 2 / sqrt(100)
+upper &lt;- sample.mean + const * 2 / sqrt(100)
+round(c(lower, upper), 4)</code></pre>
+<pre><code>#&gt; [1] -0.3862  0.3978</code></pre>
+<pre class="r"><code># 畫圖
+## 法一
+ggplot() +
+  geom_point(aes(random.sample, dnorm(random.sample, 0, 2))) +
+  geom_vline(xintercept = c(lower, upper),
+             linetype = &quot;dashed&quot;,
+             color = &quot;red&quot;)</code></pre>
+<p><img src="/post/20191119/TA_class_1128_files/figure-html/unnamed-chunk-10-1.png" width="672" /></p>
+<pre class="r"><code>## 法二
+data &lt;- tibble(x = random.sample, 
+               y = dnorm(random.sample, 0, 2))
+
+ggplot(data) +
+  geom_point(aes(x, y)) +
+  geom_vline(xintercept = c(lower, upper),
+             linetype = &quot;dashed&quot;,
+             color = &quot;red&quot;,
+             size = 1)</code></pre>
+<p><img src="/post/20191119/TA_class_1128_files/figure-html/unnamed-chunk-10-2.png" width="672" /></p>
+<pre class="r"><code>## 法三
+data &lt;- tibble(x = rnorm(100, 0, 2), 
+               y = dnorm(x, 0, 2))
+
+ggplot(data) +
+  geom_point(aes(x, y)) +
+  geom_vline(xintercept = c(mean(data$x) - const * 2 / sqrt(100),
+                            mean(data$x) + const * 2 / sqrt(100)),
+             linetype = &quot;dashed&quot;,
+             color = &quot;red&quot;,
+             size = 1)</code></pre>
+</div>
+<div id="母體變異數未知" class="section level3">
+<h3>母體變異數未知</h3>
+<p><span class="math display">\[
+\begin{aligned}
+&amp;X_1, X_2,\dots, X_n \sim N(\mu, \sigma^2)\quad 
+S_n^2 = \frac{1}{n-1}\sum(X_i-\bar X_n)^2\\\\
+&amp;\frac{\bar X_n - \mu}{\frac{S_n}{\sqrt n}} \sim t_{n-1}\\\\
+&amp;c = -T_{n-1}^{-1}(0.025) = T_{n-1}^{-1}(0.975)\\\\
+&amp;0.95 = P(-c &lt; 
+\frac{\bar X_n - \mu}{\frac{S_n}{\sqrt n}} 
+&lt; c)\\\\
+&amp;0.95 = P(\bar X_n - c\frac{S_n}{\sqrt{n}} 
+&lt; \mu 
+&lt; \bar X_n + c\frac{S_n}{\sqrt{n}})
+\end{aligned}
+\]</span></p>
+<p>在母體常態分配，平均值為 0, 標準差未知，隨機抽出 100 個樣本，找出此次抽樣的信賴區間，並畫圖表示。</p>
+<pre class="r"><code># 隨機抽樣
+random.sample = rnorm(n = 100, mean = 0, sd = 2)
+# 樣本平均數
+sample.mean &lt;- mean(random.sample)
+sample.mean</code></pre>
+<pre><code>#&gt; [1] 0.02228167</code></pre>
+<pre class="r"><code># S_n
+S_n &lt;- sqrt(sum((random.sample - sample.mean) ** 2) / (100 - 1))
+S_n</code></pre>
+<pre><code>#&gt; [1] 1.592378</code></pre>
+<pre class="r"><code># t 分配 2.5% 和 97.5% 的位置
+t_0.025 &lt;- qt(0.025, df = 100 - 1)
+t_0.975 &lt;- qt(0.975, df = 100 - 1)
+round(c(t_0.025, t_0.975), 2)</code></pre>
+<pre><code>#&gt; [1] -1.98  1.98</code></pre>
+<pre class="r"><code>const &lt;- t_0.975
+# 信賴區間
+lower &lt;- sample.mean - const * S_n / sqrt(100)
+upper &lt;- sample.mean + const * S_n / sqrt(100)
+round(c(lower, upper), 2)</code></pre>
+<pre><code>#&gt; [1] -0.29  0.34</code></pre>
+<pre class="r"><code># 畫圖
+## 法一
+ggplot() +
+  geom_point(aes(random.sample, dnorm(random.sample, 0, 2))) +
+  geom_vline(xintercept = c(lower, upper),
+             linetype = &quot;dashed&quot;,
+             color = &quot;red&quot;)</code></pre>
+<p><img src="/post/20191119/TA_class_1128_files/figure-html/unnamed-chunk-12-1.png" width="672" /></p>
+</div>
+</div>
+<div id="驗證" class="section level2">
+<h2>驗證</h2>
+<p>模擬重複抽樣 100 次，每次抽樣均抽出 100 組樣本，驗證雙尾檢定下 95% 的信賴區間。</p>
+<p>在觀察到樣本前，預期樣本的信賴區間有 95% 的可能涵蓋母體平均數，
+我們檢驗在重複抽樣 100 次後，有多少次抽樣的信賴區間包含母體平均數。</p>
+<pre class="r"><code># 模擬
+simulate &lt;- map(1:100, ~ tibble(r = rnorm(100, 0, 2)))
+lower_upper &lt;- simulate %&gt;%
+  map(~ tibble(lower = mean(.x$r) - qnorm(0.975, 0, 1) * 2 / sqrt(100),
+               upper = mean(.x$r) - qnorm(0.025, 0, 1) * 2 / sqrt(100))) %&gt;%
+  bind_rows()
+
+lower_upper</code></pre>
+<pre><code>#&gt; # A tibble: 100 x 2
+#&gt;      lower upper
+#&gt;      &lt;dbl&gt; &lt;dbl&gt;
+#&gt;  1 -0.366  0.418
+#&gt;  2 -0.558  0.226
+#&gt;  3 -0.655  0.129
+#&gt;  4 -0.144  0.640
+#&gt;  5 -0.518  0.266
+#&gt;  6 -0.0542 0.730
+#&gt;  7  0.0739 0.858
+#&gt;  8 -0.605  0.179
+#&gt;  9 -0.273  0.511
+#&gt; 10 -0.553  0.231
+#&gt; # ... with 90 more rows</code></pre>
+<pre class="r"><code>lower_upper %&gt;% 
+  mutate(row = row_number()) %&gt;%
+  ggplot() +
+  geom_segment(aes(x = lower, y = row,
+                   xend = upper, yend = row),
+               color = &quot;violetred4&quot;,
+               size = 1) +
+  labs(x = &quot;confidence interval&quot;,
+       y = &quot;simulation&quot;)</code></pre>
+<p><img src="/post/20191119/TA_class_1128_files/figure-html/unnamed-chunk-13-1.png" width="672" /></p>
+<pre class="r"><code>confidence &lt;- lower_upper %&gt;% 
+  mutate(cover = 
+           case_when(lower &gt; 0 | upper &lt; 0 ~ 0, 
+                     TRUE ~ 1)) %&gt;%
+  summarise(cover = sum(cover))
+
+confidence</code></pre>
+<pre><code>#&gt; # A tibble: 1 x 1
+#&gt;   cover
+#&gt;   &lt;dbl&gt;
+#&gt; 1    96</code></pre>
+<p>本次模擬的結果有 96% 的信賴區間涵蓋母體平均數。</p>
+</div>
+<div id="作業" class="section level2">
+<h2>作業</h2>
+<p>請應用區間估計對資料的變數做說明。</p>
+</div>
+<div id="補充" class="section level2 tabset tabset-pills tabset-fade">
+<h2>補充</h2>
+<ol start="2" style="list-style-type: decimal">
+<li>單一母體變異數的區間估計</li>
+</ol>
+<p>假設母體常態分配，以 <span class="math inline">\(95\%\)</span> 信賴區間，雙尾檢定為例。</p>
+<p>Hint: <span class="math inline">\(\chi^2_n\)</span> 系列的函數為 <code>*chisq()</code>。</p>
+<div id="母體平均數已知" class="section level3">
+<h3>母體平均數已知</h3>
+<p><span class="math display">\[
+\begin{aligned}
+&amp;X_1, X_2,\dots, X_n \sim N(\mu, \sigma^2)\\\\
+&amp;\frac{\sum(X_i - \mu)^2}{\sigma^2} \sim \chi^2_{n}\\\\
+&amp;0.95 = P(\chi^2_{n, 0.025} &lt; 
+\frac{\sum(X_i - \mu)^2}{\sigma^2}
+&lt; \chi^2_{n, 0.975})\\\\
+&amp;0.95 = P(\frac{\sum(X_i - \mu)^2}{\chi^2_{n, 0.975}} 
+&lt; \sigma^2
+&lt; \frac{\sum(X_i - \mu)^2}{\chi^2_{n, 0.025}})
+\end{aligned}
+\]</span></p>
+</div>
+<div id="母體平均數未知" class="section level3">
+<h3>母體平均數未知</h3>
+<p><span class="math display">\[
+\begin{aligned}
+&amp;X_1, X_2,\dots, X_n \sim N(\mu, \sigma^2)\\\\
+&amp;\frac{\sum(X_i - \bar X_n)^2}{\sigma^2} \sim \chi^2_{n-1}\\\\
+&amp;0.95 = P(\chi^2_{n-1, 0.025} &lt; 
+\frac{\sum(X_i - \bar X_n)^2}{\sigma^2}
+&lt; \chi^2_{n-1, 0.975})\\\\
+&amp;0.95 = P(\frac{\sum(X_i - \bar X_n)^2}{\chi^2_{n-1, 0.975}} 
+&lt; \sigma^2
+&lt; \frac{\sum(X_i - \bar X_n)^2}{\chi^2_{n-1, 0.025}})
+\end{aligned}
+\]</span></p>
+</div>
+</div>

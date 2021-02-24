@@ -1,0 +1,179 @@
+---
+title: "TA_class_1212"
+author: "Hochia"
+date: 2019-12-03T21:13:14-05:00
+output: 
+  html_document:
+    toc: true
+    toc_float: true
+    toc_depth: 3
+categories: ["R"]
+tags: ["R Markdown", "tidyverse"]
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, comment = "#>", cache = TRUE)
+library(tidyverse)
+library(gridExtra)
+set.seed(100)
+```
+
+## 預備
+
+```{r,eval=FALSE}
+library(tidyverse)
+```
+
+## 程式-t檢定
+
+```{r, eval=FALSE}
+# S3 method for default
+t.test(x, y = NULL,
+       alternative = c("two.sided", "less", "greater"),
+       mu = 0, paired = FALSE, var.equal = FALSE,
+       conf.level = 0.95, …)
+
+# S3 method for formula
+t.test(formula, data, subset, na.action, …)
+```
+
+### 單組樣本
+
+先透過畫圖與敘述統計量了解資料的樣貌。再進行假設檢定的步驟。
+
+```{r}
+boxplot(mpg$cty)
+summary(mpg$cty)
+```
+
+$$
+\begin{aligned} 
+\left\{ \begin{array}{ll} 
+H_0: & \mu \geq 20\\
+H_1: & \mu < 20
+\end{array} \right.
+\end{aligned}
+$$
+
+```{r}
+t.test(mpg$cty, alternative = "less", mu = 20, conf.level = 0.99)
+```
+
+
+```{r}
+hy.cty <- t.test(mpg$cty, alternative = "less", mu = 20, conf.level = 0.99)
+
+hy.cty
+```
+
+`t.test()` 回傳的資料型態是屬於 list。在 Global Environment 可以見到 `hy.cty` 是 List of 10，點開來看，可以知道 list 每項的名稱。取值的方式如下:
+
+```{r}
+hy.cty$p.value
+hy.cty[[3]]
+hy.cty$conf.int
+hy.cty[[4]]
+hy.cty$estimate
+hy.cty[[5]]
+```
+
+### 兩組樣本
+
+以市區油耗以及高速公路油耗為例。
+
+```{r}
+df <- mpg %>%
+  select(cty,hwy) %>%
+  gather(cty, hwy, key = "mpg", value = "value")
+
+ggplot(df) +
+  geom_boxplot(aes(mpg, value))
+```
+
+假設兩組樣本皆屬於常態分配的情況下，檢驗兩組樣本的變異數是否有顯著差異。
+
+```{r, eval=FALSE}
+# S3 method for default
+var.test(x, y, ratio = 1,
+         alternative = c("two.sided", "less", "greater"),
+         conf.level = 0.95, …)
+
+# S3 method for formula
+var.test(formula, data, subset, na.action, …)
+```
+
+比如比較市區油耗以及高速公路油耗。
+
+```{r}
+var.test(mpg$cty, mpg$hwy, ratio = 1,
+         alternative = "two.sided",
+         conf.level = 0.90)
+```
+
+因為 F-test 的 p-value 小於顯著水準 0.1，
+表示兩組樣本的變異數有顯著差異，因此 t-test 假設變異數不相等，設定 `var.equal = FALSE`。
+假如是成對樣本，設定 `paired = TRUE`，
+不是成對樣本，設定 `paired = FLASE`。
+
+```{r}
+# Paired t-test
+t.test(mpg$cty, mpg$hwy,
+       alternative = "less",
+       mu = 0, paired = TRUE, var.equal = FALSE,
+       conf.level = 0.99)
+
+# Welch Two Sample t-test
+t.test(mpg$cty, mpg$hwy,
+       alternative = "less",
+       mu = 0, paired = FALSE, var.equal = FALSE,
+       conf.level = 0.99)
+```
+
+也可以改寫成 formula 的形式，只是可能需要調整資料整理的方式。
+
+```{r}
+t.test(value ~ mpg, data = df)
+```
+
+注意 formula 放置離散與連續變數的位置。
+
+## 作業
+
+假設檢定，單一樣本與成對樣本都各做一組，此外可以與上周自行打公式計算的結果比較。按照課本的六步驟回答。
+
+如果要使用 R markdown 的同學，
+假設檢定虛無假設與對立假設的寫法如下:
+
+```
+$$
+\begin{aligned} 
+\left\{ \begin{array}{ll} 
+H_0: & \mu \geq 20\\
+H_1: & \mu < 20
+\end{array} \right.
+\end{aligned}
+$$
+```
+
+$$
+\begin{aligned} 
+\left\{ \begin{array}{ll} 
+H_0: & \mu \geq 20\\
+H_1: & \mu < 20
+\end{array} \right.
+\end{aligned}
+$$
+
+大於等於的符號為 `\geq`。
+
+小於等於的符號為 `\leq`。
+
+更多內容可以參考維基百科 [Latex](https://latex.wikia.org/wiki/List_of_LaTeX_symbols)。
+
+
+
+
+
+
+
+

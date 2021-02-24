@@ -1,0 +1,195 @@
+---
+title: "TA_class_1031"
+author: "Hochia"
+date: 2019-10-18T21:13:14-05:00
+output: 
+  html_document:
+    toc: true
+    toc_float: true
+    toc_depth: 3
+categories: ["R"]
+tags: ["R Markdown", "tidyverse"]
+---
+
+
+
+<div id="預備" class="section level2">
+<h2>預備</h2>
+<pre class="r"><code>library(tidyverse)</code></pre>
+</div>
+<div id="dplyr-資料轉換-ggplot2-資料視覺化" class="section level2">
+<h2><code>dplyr</code> 資料轉換 &amp; <code>ggplot2</code> 資料視覺化</h2>
+<div id="dplyr-資料轉換" class="section level3">
+<h3><code>dplyr</code> 資料轉換</h3>
+<p>回想上一次我們做過的:</p>
+<pre class="r"><code>mpg %&gt;%
+  select(manufacturer, cty, hwy, class) %&gt;%
+  filter(class %in% c(&quot;compact&quot;, &quot;suv&quot;)) %&gt;%
+  group_by(manufacturer, class) %&gt;%
+  summarise(avg = mean(cty))</code></pre>
+<pre><code>#&gt; # A tibble: 15 x 3
+#&gt; # Groups:   manufacturer [12]
+#&gt;    manufacturer class     avg
+#&gt;    &lt;chr&gt;        &lt;chr&gt;   &lt;dbl&gt;
+#&gt;  1 audi         compact  17.9
+#&gt;  2 chevrolet    suv      12.7
+#&gt;  3 dodge        suv      11.9
+#&gt;  4 ford         suv      12.9
+#&gt;  5 jeep         suv      13.5
+#&gt;  6 land rover   suv      11.5
+#&gt;  7 lincoln      suv      11.3
+#&gt;  8 mercury      suv      13.2
+#&gt;  9 nissan       compact  20  
+#&gt; 10 nissan       suv      13.8
+#&gt; 11 subaru       compact  19.8
+#&gt; 12 subaru       suv      18.8
+#&gt; 13 toyota       compact  22.2
+#&gt; 14 toyota       suv      14.4
+#&gt; 15 volkswagen   compact  20.8</code></pre>
+<p>可是想加入高速公路油耗進行比較，要怎麼辦呢?複製貼上，改 <code>cty</code> 為 <code>hwy</code> 是一種作法，但不是很高明。如果要把製造商的 <code>cty</code> 和 <code>hwy</code> 的平均值整理在一起又要再多一個步驟。</p>
+<p>這件事情可以用 <code>summarise()</code> 一次做完:</p>
+<pre class="r"><code>mpg %&gt;%
+  select(manufacturer, cty, hwy, class) %&gt;%
+  filter(class %in% c(&quot;compact&quot;, &quot;suv&quot;)) %&gt;%
+  group_by(manufacturer) %&gt;%
+  summarise(cty_avg = mean(cty), hwy_avg = mean(hwy))</code></pre>
+<pre><code>#&gt; # A tibble: 12 x 3
+#&gt;    manufacturer cty_avg hwy_avg
+#&gt;    &lt;chr&gt;          &lt;dbl&gt;   &lt;dbl&gt;
+#&gt;  1 audi            17.9    26.9
+#&gt;  2 chevrolet       12.7    17.1
+#&gt;  3 dodge           11.9    16  
+#&gt;  4 ford            12.9    17.8
+#&gt;  5 jeep            13.5    17.6
+#&gt;  6 land rover      11.5    16.5
+#&gt;  7 lincoln         11.3    17  
+#&gt;  8 mercury         13.2    18  
+#&gt;  9 nissan          15.8    21.3
+#&gt; 10 subaru          19.2    25.4
+#&gt; 11 toyota          19.1    25.6
+#&gt; 12 volkswagen      20.8    28.5</code></pre>
+<p>可是現在沒辦法直接看出哪個製造商的平均油耗最高最低，我們想要排列資料:</p>
+<pre class="r"><code>mpg %&gt;%
+  select(manufacturer, cty, hwy, class) %&gt;%
+  filter(class %in% c(&quot;compact&quot;, &quot;suv&quot;)) %&gt;%
+  group_by(manufacturer) %&gt;%
+  summarise(cty_avg = mean(cty), hwy_avg = mean(hwy)) %&gt;%
+  arrange(cty_avg)</code></pre>
+<pre><code>#&gt; # A tibble: 12 x 3
+#&gt;    manufacturer cty_avg hwy_avg
+#&gt;    &lt;chr&gt;          &lt;dbl&gt;   &lt;dbl&gt;
+#&gt;  1 lincoln         11.3    17  
+#&gt;  2 land rover      11.5    16.5
+#&gt;  3 dodge           11.9    16  
+#&gt;  4 chevrolet       12.7    17.1
+#&gt;  5 ford            12.9    17.8
+#&gt;  6 mercury         13.2    18  
+#&gt;  7 jeep            13.5    17.6
+#&gt;  8 nissan          15.8    21.3
+#&gt;  9 audi            17.9    26.9
+#&gt; 10 toyota          19.1    25.6
+#&gt; 11 subaru          19.2    25.4
+#&gt; 12 volkswagen      20.8    28.5</code></pre>
+<p><code>arrange()</code> <strong>由小到大</strong>排列 <code>cty_avg</code> 這個變數。
+希望油耗表現最好的排在第一位，就用 <code>desc()</code> 包住 <code>cty_avg</code>。</p>
+<pre class="r"><code>mpg %&gt;%
+  select(manufacturer, cty, hwy, class) %&gt;%
+  filter(class %in% c(&quot;compact&quot;, &quot;suv&quot;)) %&gt;%
+  group_by(manufacturer) %&gt;%
+  summarise(cty_avg = mean(cty), hwy_avg = mean(hwy)) %&gt;%
+  arrange(desc(cty_avg))</code></pre>
+<pre><code>#&gt; # A tibble: 12 x 3
+#&gt;    manufacturer cty_avg hwy_avg
+#&gt;    &lt;chr&gt;          &lt;dbl&gt;   &lt;dbl&gt;
+#&gt;  1 volkswagen      20.8    28.5
+#&gt;  2 subaru          19.2    25.4
+#&gt;  3 toyota          19.1    25.6
+#&gt;  4 audi            17.9    26.9
+#&gt;  5 nissan          15.8    21.3
+#&gt;  6 jeep            13.5    17.6
+#&gt;  7 mercury         13.2    18  
+#&gt;  8 ford            12.9    17.8
+#&gt;  9 chevrolet       12.7    17.1
+#&gt; 10 dodge           11.9    16  
+#&gt; 11 land rover      11.5    16.5
+#&gt; 12 lincoln         11.3    17</code></pre>
+<p>市區油耗的表現都不如高速公路的油耗，可能是因為市區會一直塞車，走走停停，所以油耗表現比較差。但是差距有多少呢?</p>
+<pre class="r"><code>mpg %&gt;%
+  select(manufacturer, cty, hwy, class) %&gt;%
+  filter(class %in% c(&quot;compact&quot;, &quot;suv&quot;)) %&gt;%
+  group_by(manufacturer) %&gt;%
+  summarise(cty_avg = mean(cty), hwy_avg = mean(hwy)) %&gt;%
+  mutate(difference = hwy_avg - cty_avg)</code></pre>
+<pre><code>#&gt; # A tibble: 12 x 4
+#&gt;    manufacturer cty_avg hwy_avg difference
+#&gt;    &lt;chr&gt;          &lt;dbl&gt;   &lt;dbl&gt;      &lt;dbl&gt;
+#&gt;  1 audi            17.9    26.9       9   
+#&gt;  2 chevrolet       12.7    17.1       4.44
+#&gt;  3 dodge           11.9    16         4.14
+#&gt;  4 ford            12.9    17.8       4.89
+#&gt;  5 jeep            13.5    17.6       4.12
+#&gt;  6 land rover      11.5    16.5       5   
+#&gt;  7 lincoln         11.3    17         5.67
+#&gt;  8 mercury         13.2    18         4.75
+#&gt;  9 nissan          15.8    21.3       5.50
+#&gt; 10 subaru          19.2    25.4       6.20
+#&gt; 11 toyota          19.1    25.6       6.55
+#&gt; 12 volkswagen      20.8    28.5       7.71</code></pre>
+<p><code>mutate()</code> 新增變數，變數命名為 <code>difference</code>，是計算
+<code>hwy_avg</code> 和 <code>cty_avg</code> 的差異，
+<code>-</code> 跟你想的應該一樣，代表減法。</p>
+</div>
+<div id="ggplot2-資料視覺化" class="section level3">
+<h3><code>ggplot2</code> 資料視覺化</h3>
+<p>回想上一次我們做過的:</p>
+<pre class="r"><code>ggplot(data = mpg) +
+  geom_point(mapping = aes(x = cty, y = hwy))</code></pre>
+<p><img src="/post/20191018/TA_class_1031_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
+<p>寫法有其他種類的變形，來比較一下:</p>
+<pre class="r"><code>mpg %&gt;%
+  ggplot(aes(cty, hwy)) +
+    geom_point()
+
+ggplot(mpg, aes(cty, hwy)) +
+  geom_point()
+
+ggplot(mpg) +
+  geom_point(aes(cty, hwy))
+
+mpg %&gt;% 
+  ggplot() +
+    geom_point(aes(cty, hwy))</code></pre>
+<p>第一種是把資料擺在 <code>ggplot()</code> 外頭，再用 <code>%&gt;%</code> 傳到下一步驟。</p>
+<p>第二種是把資料擺在 <code>ggplot()</code> 裡面。</p>
+<p>第三種把美學擺在畫圖的方式。</p>
+<p>或許你能寫出第四種，再想第五種…</p>
+<p>但是，別寫成這樣，是錯的:</p>
+<pre class="r"><code>ggplot(mpg, cty, hwy) +
+  geom_point()</code></pre>
+<pre><code>#&gt; Error in ggplot.default(mpg, cty, hwy): 找不到物件 &#39;cty&#39;</code></pre>
+<pre class="r"><code>ggplot(mpg) +
+  geom_point(cty, hwy)</code></pre>
+<pre><code>#&gt; Error in layer(data = data, mapping = mapping, stat = stat, geom = GeomPoint, : 找不到物件 &#39;cty&#39;</code></pre>
+<p>在回到剛才整理過的資料，現在要以視覺化的方式呈現，我們想看出市區與高速公路油耗的差異:</p>
+<pre class="r"><code>mpg %&gt;%
+  select(manufacturer, cty, hwy, class) %&gt;%
+  filter(class %in% c(&quot;compact&quot;, &quot;suv&quot;)) %&gt;%
+  group_by(manufacturer) %&gt;%
+  summarise(cty_avg = mean(cty), hwy_avg = mean(hwy)) %&gt;%
+  mutate(difference = hwy_avg - cty_avg) %&gt;%
+  ggplot() +
+  geom_col(aes(manufacturer, hwy_avg), 
+           alpha = 0.2, fill = &quot;orange&quot;, color = &quot;darkorange&quot;) +
+  geom_col(aes(manufacturer, difference), 
+           alpha = 0.3, fill = &quot;violet&quot;, color = &quot;purple&quot;) +
+  coord_flip() +
+  theme_classic()</code></pre>
+<p><img src="/post/20191018/TA_class_1031_files/figure-html/unnamed-chunk-10-1.png" width="672" /></p>
+<p><code>geom_col()</code> 和 <code>geom_boxplot()</code> 都適用於雙變數，一個離散，一個連續。也許你可以試著疊加盒鬚圖與長條圖。</p>
+<p>只要用顏色就能區分即可，所以使用 <code>difference</code> 比 <code>cty_avg</code> 更適當。</p>
+<p>當然可以自行嘗試使用 <code>cty_avg</code> 的後果。</p>
+<p><code>alpha</code> 設定透明度。</p>
+<p><code>fill</code> 填滿顏色。</p>
+<p><code>color</code> 邊框顏色。</p>
+</div>
+</div>

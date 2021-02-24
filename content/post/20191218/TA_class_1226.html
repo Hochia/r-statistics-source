@@ -1,0 +1,166 @@
+---
+title: "TA_class_1226"
+author: "Hochia"
+date: 2019-12-18T21:13:14-05:00
+output: 
+  html_document:
+    toc: true
+    toc_float: true
+    toc_depth: 3
+categories: ["R"]
+tags: ["R Markdown", "tidyverse"]
+---
+
+
+
+<div id="預備" class="section level2">
+<h2>預備</h2>
+<pre class="r"><code>library(tidyverse)</code></pre>
+</div>
+<div id="程式-卡方檢定" class="section level2">
+<h2>程式-卡方檢定</h2>
+<div id="配適度檢定" class="section level3">
+<h3>配適度檢定</h3>
+<p>以賽車手在不同賽道上的練習次數為例，
+Hamilton 在日本、新加坡、澳洲這三個國家的賽道上練習，
+我們可能會想知道賽車手是否有偏好練習某條賽道，
+猜想可能是因為賽道難度更高所以需要更頻繁的練習。
+所以我們期望賽車手在三條賽道上的練習比例為 <span class="math inline">\(1:1:1\)</span>。</p>
+<p>假設檢定如下:</p>
+<p><span class="math display">\[
+\begin{aligned} 
+\left\{ \begin{array}{ll} 
+H_0: 賽道的練習次數和期望次數沒有顯著差異\\
+H_1: 賽道的練習次數和期望次數有顯著差異
+\end{array} \right.
+\end{aligned}
+\]</span></p>
+<pre class="r"><code># 此題純屬虛構，請勿當真!!!
+country &lt;- c(&quot;Japan&quot;, &quot;Singapore&quot;, &quot;Australia&quot;)
+times &lt;- c(1259, 1382, 1541) # 次數
+proportion &lt;- times / sum(times) # 比例
+proportion</code></pre>
+<pre><code>#&gt; [1] 0.3010521 0.3304639 0.3684840</code></pre>
+<p>卡方檢定的程式碼如下:</p>
+<pre class="r"><code>f1 &lt;- chisq.test(times, p = c(1/3, 1/3, 1/3))
+f1</code></pre>
+<pre><code>#&gt; 
+#&gt;  Chi-squared test for given probabilities
+#&gt; 
+#&gt; data:  times
+#&gt; X-squared = 28.679, df = 2, p-value = 5.923e-07</code></pre>
+<p><code>f1</code> 有其他沒被 console 顯示的資訊，可以從 Global Environment 點選觀看，取值方式如下:</p>
+<pre class="r"><code>f1$observed</code></pre>
+<pre><code>#&gt; [1] 1259 1382 1541</code></pre>
+<pre class="r"><code>f1$expected</code></pre>
+<pre><code>#&gt; [1] 1394 1394 1394</code></pre>
+<pre class="r"><code>f1$residuals</code></pre>
+<pre><code>#&gt; [1] -3.615783 -0.321403  3.937186</code></pre>
+</div>
+<div id="獨立性" class="section level3">
+<h3>獨立性</h3>
+<p>我們繼續上次做過的列聯表，但是換個方式解釋。列聯表表示五位駕駛以及他們在經過四條路線的次數。</p>
+<pre class="r"><code>driver &lt;- c(&quot;Hamilton&quot;, &quot;Bottas&quot;, &quot;Verstappen&quot;, &quot;Leclerc&quot;, &quot;Vettle&quot;)
+data &lt;- tibble(driver = driver,
+               A = c(18, 16, 21, 23, 25),
+               B = c(17, 23, 21, 22, 24),
+               C = c(21, 23, 26, 29, 28),
+               D = c(22, 22, 22, 25, 28))
+
+data</code></pre>
+<pre><code>#&gt; # A tibble: 5 x 5
+#&gt;   driver         A     B     C     D
+#&gt;   &lt;chr&gt;      &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
+#&gt; 1 Hamilton      18    17    21    22
+#&gt; 2 Bottas        16    23    23    22
+#&gt; 3 Verstappen    21    21    26    22
+#&gt; 4 Leclerc       23    22    29    25
+#&gt; 5 Vettle        25    24    28    28</code></pre>
+<p>資料需要轉換才能應用在畫圖。</p>
+<pre class="r"><code>data2 &lt;- data %&gt;%
+  gather(-driver, key = &quot;road&quot;, value = &quot;frequency&quot;) </code></pre>
+<p>畫圖的方式因人而異，只要能充分的傳達意思都是好圖。以下列舉幾種不同的做法。</p>
+<p>把頻率用點的大小表現，</p>
+<pre class="r"><code>data2 %&gt;%
+  ggplot(aes(road, driver)) + 
+  geom_point(aes(size = frequency))</code></pre>
+<p><img src="/post/20191218/TA_class_1226_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
+<p>以次數的方式堆疊。</p>
+<pre class="r"><code>data2 %&gt;%
+  ggplot(aes(driver, frequency)) + 
+  geom_col(aes(fill = road))</code></pre>
+<p><img src="/post/20191218/TA_class_1226_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
+<p>轉換成百分比的形式堆疊，</p>
+<pre class="r"><code>data2 %&gt;%
+  ggplot(aes(driver, frequency)) + 
+  geom_col(aes(fill = road), position = &quot;fill&quot;)</code></pre>
+<p><img src="/post/20191218/TA_class_1226_files/figure-html/unnamed-chunk-9-1.png" width="672" /></p>
+<p>當然我們可以再加入更多的程式碼美化圖片，但在這之前，先練好基本型。</p>
+<p>列聯表行列變數的獨立性檢定如下:</p>
+<pre class="r"><code>data2 &lt;- data[,2:5]
+
+data.chisq &lt;- chisq.test(data2)
+data.chisq</code></pre>
+<pre><code>#&gt; 
+#&gt;  Pearson&#39;s Chi-squared test
+#&gt; 
+#&gt; data:  data2
+#&gt; X-squared = 1.7679, df = 12, p-value = 0.9997</code></pre>
+<p>注意，<code>chisq.test()</code> 的資料要去掉變數名稱，
+也就是只取列聯表的值當作資料。</p>
+<p><code>data.chisq</code> 有其他沒被 console 顯示的資訊，可以從 Global Environment 點選觀看，取值方式如下:</p>
+<pre class="r"><code>data.chisq$observed
+data.chisq$expected
+data.chisq$residuals</code></pre>
+</div>
+</div>
+<div id="程式-迴歸" class="section level2">
+<h2>程式-迴歸</h2>
+<p>我們又見到 mpg 了，以簡單線性迴歸為例，高速公路對市區油耗作圖如下，</p>
+<pre class="r"><code>ggplot(mpg, aes(cty, hwy)) +
+  geom_point() +
+  geom_smooth(method = &quot;lm&quot;, level = 0.99)</code></pre>
+<p><img src="/post/20191218/TA_class_1226_files/figure-html/unnamed-chunk-12-1.png" width="672" /></p>
+<p><code>geom_smooth()</code> 設定 <code>method</code> 為線性模型 <code>lm</code>，<code>level</code> 設定信賴區間的水準。如果不顯示信賴區間，設定 <code>se = FALSE</code>。</p>
+<p>迴歸的程式碼如下，以 <code>lm()</code> 搭配 <code>summary()</code> 函數。</p>
+<pre class="r"><code>model &lt;- lm(hwy ~ cty, mpg)
+summary(model)</code></pre>
+<pre><code>#&gt; 
+#&gt; Call:
+#&gt; lm(formula = hwy ~ cty, data = mpg)
+#&gt; 
+#&gt; Residuals:
+#&gt;     Min      1Q  Median      3Q     Max 
+#&gt; -5.3408 -1.2790  0.0214  1.0338  4.0461 
+#&gt; 
+#&gt; Coefficients:
+#&gt;             Estimate Std. Error t value Pr(&gt;|t|)    
+#&gt; (Intercept)  0.89204    0.46895   1.902   0.0584 .  
+#&gt; cty          1.33746    0.02697  49.585   &lt;2e-16 ***
+#&gt; ---
+#&gt; Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+#&gt; 
+#&gt; Residual standard error: 1.752 on 232 degrees of freedom
+#&gt; Multiple R-squared:  0.9138, Adjusted R-squared:  0.9134 
+#&gt; F-statistic:  2459 on 1 and 232 DF,  p-value: &lt; 2.2e-16</code></pre>
+<p>如果要加入其他變數，只要用加法連接即可，如同 ANOVA 那節所述。</p>
+<p>雖然我們可以不斷的增加新變數到模型去做預測，
+但是要承擔型一誤差和型二誤差的風險。</p>
+<p><span class="math display">\[
+\begin{aligned} 
+y = &amp;\beta_0+\beta_1x_1+\beta_2x_2+\dots+e\\\\
+&amp;\left\{ \begin{array}{ll} 
+H_0: &amp; \beta_1 = 0\\
+H_1: &amp; \beta_1 \neq 0
+\end{array} \right.
+\end{aligned}
+\]</span></p>
+<p>我們可能會問某個變數種不重要，以<span class="math inline">\(95%\)</span>信賴水準為例，
+如果拒絕虛無假設，有<span class="math inline">\(5%\)</span>的可能發生過度配適(overfitting)；
+如果不拒絕虛無假設，表示遺漏重要變數，產生偏差(bias)。
+也就是我們面臨過度配適與偏差的權衡。</p>
+</div>
+<div id="作業" class="section level2">
+<h2>作業</h2>
+<p>練習卡方檢定以及迴歸模型。</p>
+</div>

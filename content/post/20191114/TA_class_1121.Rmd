@@ -1,0 +1,231 @@
+---
+title: "TA_class_1121"
+author: "Hochia"
+date: 2019-11-14T21:13:14-05:00
+output: 
+  html_document:
+    toc: true
+    toc_float: true
+    toc_depth: 3
+categories: ["R"]
+tags: ["R Markdown", "tidyverse"]
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, comment = "#>", cache = TRUE)
+library(tidyverse)
+set.seed(100)
+```
+
+## 預備
+
+```{r,eval=FALSE}
+library(tidyverse)
+```
+
+## 複習
+
+`dplyr` 資料轉換
+
+  * `filter()` and `select()`
+  * `group_by()` and `ungroup()`
+  * `summarize()`and `summarise()`
+  * `arrange()` and `desc()`
+  * `mutate()`
+
+`tidyr` 齊整資料
+
+  * `gather()` and `spread()`
+
+`ggplot2` 資料視覺化
+
+  * `ggplot()`
+  * `geom_point()`
+  * `geom_col()`
+  * `geom_boxplot()`
+  * `facet_wrap()`
+  * `coord_flip()`
+  * `theme_classic()`
+
+## `tibble` 資料框
+
+通常 R 的使用者稱資料框都是指 `data.frame()`，
+但資料框 `tibble()` 在操作上更為方便，因此只介紹 `tibble()` 的做法。
+
+```{r}
+mpg
+```
+
+`mpg` 是 tibble 資料框。
+
+建立資料框:
+
+```{r}
+tibble(x = 1:5, y = x * x)
+```
+
+tibble 允許變數運算成為新變數。
+
+### 機率模型
+
+```{r}
+df <- tibble(
+  `隨機抽樣` = rnorm(n = 100, mean = 0, sd = 1),
+  `機率密度` = dnorm(`隨機抽樣`, mean = 0, sd = 1),
+  `累積機率` = pnorm(`隨機抽樣`, mean = 0, sd = 1),
+  `反函數` = qnorm(`累積機率`, mean = 0, sd = 1)
+)
+```
+
+```{r, echo=FALSE}
+DT::datatable(round(df,2))
+```
+
+```{r}
+ggplot(df) +
+  geom_point(aes(x = `隨機抽樣`, y = `機率密度`))
+```
+
+```{r}
+ggplot(df) +
+  geom_point(aes(x = `隨機抽樣`, y = `累積機率`))
+```
+
+## `purrr` 重複執行
+
+### 函數
+
+通常需要重複執行的程式碼會寫成函數，比如取常態分配隨機抽樣的函數是 `rnorm()`，函數中會放入參數名稱與參數值，比如 `rnorm(n = 10, mean = 0, sd = 1)`，屬於**完全比對**，但是也可以省略參數名稱，簡寫成 `rnorm(10, 0, 1)`，比對的順序會由前往後，為**順序比對**。
+另外，參數名稱也容許**部份比對**，所以寫成 `rnorm(n = 10, m = 0, s = 1)` 也可以。參數名稱比對的邏輯是是**完全比對**，再**部分比對**，最後是**由前往後**的**順序比對**。
+
+```{r}
+rnorm(n = 10, mean = 0, sd = 1)
+rnorm(10, 0, 1)
+rnorm(n = 10, m = 0, s = 1)
+```
+
+自行定義函數與呼叫函數
+
+```{r}
+hello <- function(x = "hello world"){
+  print(x)
+}
+hello
+hello()
+hello("hi")
+```
+
+定義函數 `hello()`，參數名稱 `x`，參數值預設為 `"hello world"`，當然也可以不預設參數值。大括號寫函數執行的事情。
+
+運行 `hello` 會看到函數的程式碼。運行 `hello()` 會以預設值執行函數，運行 `hello("hi")` 會以設定值執行函數。
+
+有了這些知識後，接著討論如何應用在 `purrr` 的函數。
+
+### `purrr::map()`
+
+```{r, eval=FALSE}
+# 1
+func <- function(number) number ** 2
+map(1:5, func)
+# 2
+map(1:5, function(number) number ** 2)
+# 3
+map(1:5, ~ .x ** 2)
+# 4
+map(1:5, ~ . ** 2)
+# 注意
+map
+```
+
+```{r}
+# 1
+func <- function(number) number ** 2
+map(1:5, func)
+# 2
+map(1:5, function(number) number ** 2)
+# 3
+map(1:5, ~ .x ** 2)
+# 4
+map(1:5, ~ . ** 2)
+# 注意
+map
+```
+
+`map()` 的第一個參數值放的是 list 或是 vector，第二個參數值放的是函數。
+
+`map()` 會將第一個參數值逐一傳給第二個函數執行。
+
+在第一種寫法， `func()` 會計算參數值的平方，
+因此 `map(1:5, func)` 會計算出 1 到 5 的平方。
+
+第二種寫法減少為函數取名的麻煩，而第三種寫法是精簡第二種的寫法，
+注意 `.x` 是配合 `map` 第一個參數名稱的寫法，又因為容許部分比對，所以可以寫成第四種。
+
+再看另一個 `map()` 的應用範例。
+
+```{r, eval=FALSE}
+random_sample <- function() {
+  rnorm(2, 0, 1)
+}
+random_sample()
+
+# error
+map(1:10, random_sample)
+map(1:10, function() rnorm(2, 0, 1))
+```
+
+函數並不需要參數名稱，所以在 `function()` 的 `()` 中不需要寫任何東西，函數也能成功執行，但是應用到 `map()` 函數的時候就會出問題。
+
+造成這個問題的原因是函數比對不成功，為了解決這個問題，可以取一個不會被函數的程式碼使用的參數名稱。比如:
+
+```{r}
+map(1:10, function(x) rnorm(2, 0, 1))
+```
+
+或是用 `...` 即可，`...` 的意義在於傳遞未使用的參數名稱到下一個函數做使用。
+
+```{r, eval=FALSE}
+random_sample <- function(...) {
+  rnorm(2, 0, 1)
+}
+random_sample()
+
+# correct
+map(1:10, random_sample) 
+map(1:10, function(...) rnorm(2, 0, 1))
+map(1:10, ~ rnorm(2, 0, 1))
+```
+
+`...` 傳遞未使用的參數名稱到下一個函數。
+
+```{r}
+g <- function(n, ...){
+    rnorm(n, ...)
+}
+
+g(n = 10, mean = 0, sd = 1)
+g(n = 10, 50, 1)
+g(n = 10, mean = 100, sd = 3)
+g(n = 10, sd = 3, mean = 100)
+```
+
+## 作業
+
+為了檢視同學對於前半學期的內容是否能融會貫通，這次作業請自行挑選資料進行分析，分析的內容至少包含一個題目，並具備完整的文字敘述，以及圖表輔助說明。
+
+可以從 `data(package = "ggplot2")` 挑選資料，或是其他 package 的資料也可以，
+如果同學手邊有自己感興趣的資料，也可以拿來分析。
+繳交作業時請註明使用的資料以及附上程式碼。會以程式碼做為評分標準。
+
+文字內容: 5分
+表: 5分
+圖: 5分
+
+
+
+
+
+
+
+
+

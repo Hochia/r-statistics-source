@@ -1,0 +1,257 @@
+---
+title: "TA_class_1017"
+author: "Hochia"
+date: 2019-10-15T21:13:14-05:00
+output: 
+  html_document:
+    toc: true
+    toc_float: true
+    toc_depth: 3
+categories: ["R"]
+tags: ["R Markdown", "tidyverse"]
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, fig.align = "center", comment = "#>")
+```
+
+# New Project
+
+File > New Project..
+
+<center>
+
+![New Project][p0]
+
+[p0]: fig_00.png
+
+</center>
+
+Set the directory name and the subdirectory.
+
+# R Markdown
+
+You can write the report with RMarkdown. It can generate HTML, PDF, Word, and PPT documents. Furthermore, math equations can be write with LaTex format.
+
+> Find the cheet sheet from *Help > Cheetsheets > R Markdown Cheet Sheet*
+
+Create your R Markdown!
+
+<center>
+
+![R Markdown][p1]
+
+[p1]: fig_01.png
+
+</center>
+
+Add the title and author name.
+
+<center>
+
+![Setup][p2]
+
+[p2]: fig_02.png
+
+</center>
+
+Kick the "Knit" button.
+
+<center>
+
+![Knit][p3]
+
+[p3]: fig_03.png
+
+</center>
+
+Then you will see the following example.
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r cars}
+summary(cars)
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+
+# R Code Chunks
+
+shortcut 
+
+`Ctrl + Alt + I` on Windows
+
+`Cmd + Option + I` on macOS
+
+Add your R code in code chunk, then R Markdown will run it.
+
+```{r, echo=FALSE, comment=""}
+cat("```{r}\nsummary(cars)\n```")
+```
+
+```{r}
+summary(cars)
+```
+
+```{r, echo=FALSE, comment=""}
+cat("```{r}\nx = 5  # radius of a circle\n```\n\n")
+cat("For a circle with the radius `r x`,
+its area is `r pi * x^2`.\n")
+```
+
+```{r}
+x = 5  # radius of a circle
+```
+
+For a circle with the radius `r x`,
+its area is `r pi * x^2`.
+
+# LaTex
+
+Use `$` to add math equations in the paragraph.
+
+`the acceptance rate in $95\%$ confidence`
+
+the acceptance rate in $95\%$ confidence
+
+
+Use `$$` to add math equations in single or multiple lines.
+
+```
+$$
+f_X(x) = {x-1 \choose r-1} p^r (1-p)^{x-r} I_{(r,r+1, \dots)} (x)
+$$
+```
+
+$$
+f_X(x) = {x-1 \choose r-1} p^r (1-p)^{x-r} I_{(r,r+1, \dots)} (x)
+$$
+
+```
+$$
+\begin{aligned}
+f_X(x) = {x-1 \choose r-1} p^r (1-p)^{x-r} I_{(r,r+1, \dots)} (x)
+f_X(x) = {x-1 \choose r-1} p^r (1-p)^{x-r} I_{(r,r+1, \dots)} (x)
+\end{aligned}
+$$
+```
+
+$$
+\begin{aligned}
+f_X(x) = {x-1 \choose r-1} p^r (1-p)^{x-r} I_{(r,r+1, \dots)} (x)\\
+f_X(x) = {x-1 \choose r-1} p^r (1-p)^{x-r} I_{(r,r+1, \dots)} (x)
+\end{aligned}
+$$
+
+For more information, see [Latex](https://latex.wikia.org/wiki/List_of_LaTeX_symbols) in Wiki.
+
+# Wrangle with Data
+
+## Prerequisite
+
+```{r}
+# install.packages("tidyverse")
+library(tidyverse)
+```
+
+Tidyverse contains the packages you may need to use in data science, including ggplot2, dplyr, etc. So you do not need to install them individually.
+
+## Data
+
+```{r}
+ggplot2::mpg
+```
+
+`?ggplot2::mpg` # For more information
+
+Or you can simply call `?mpg` if you had already call the library.
+
+## Select columns with `select()`
+
+```{r, eval=FALSE}
+df <- select(mpg, manufacturer, cty, hwy, class)
+df
+summary(df)
+table(df %>% select(manufacturer, class))
+```
+
+```{r}
+df <- select(mpg, manufacturer, cty, hwy, class)
+df
+summary(df)
+table(df %>% select(manufacturer, class))
+```
+
+## Filter rows with `filter()`
+
+Logic "and"
+
+```{r}
+filter(df, class == "compact", cty < 20)
+```
+
+
+Logic "or"
+
+These three are equivalent.
+
+```{r, eval=FALSE}
+filter(df, class == "compact" | class == "suv")
+df %>% filter(class == "compact" | class == "suv")
+df %>% filter(class %in% c("compact", "suv"))
+```
+
+```{r}
+filter(df, class == "compact" | class == "suv")
+df %>% filter(class == "compact" | class == "suv")
+df %>% filter(class %in% c("compact", "suv"))
+```
+
+## Summary
+
+You can work this way!
+
+```{r}
+mpg %>%
+  select(manufacturer, cty, hwy, class) %>%
+  filter(class %in% c("compact", "suv"))
+```
+
+
+# Homework
+
+Wrangle with `ggplot2::mpg` and show the result.
+
+1. Select `manufacturer`, `year`, and `displ`.
+
+2. Filter `year` is 1999 and  `displ < 2`.
+
+Reference solution
+
+```{r, echo=FALSE}
+mpg %>% select(manufacturer, year, displ)
+
+mpg %>% 
+  select(manufacturer, year, displ) %>%
+  filter(year == 1999, displ < 2)
+```
+
+
+
+
+
+
+
+

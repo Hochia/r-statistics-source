@@ -1,0 +1,165 @@
+---
+title: "TA_class_1031"
+author: "Hochia"
+date: 2019-10-18T21:13:14-05:00
+output: 
+  html_document:
+    toc: true
+    toc_float: true
+    toc_depth: 3
+categories: ["R"]
+tags: ["R Markdown", "tidyverse"]
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, comment = "#>", cache = TRUE)
+library(tidyverse)
+```
+
+## 預備
+
+```{r,eval=FALSE}
+library(tidyverse)
+```
+
+## `dplyr` 資料轉換 & `ggplot2` 資料視覺化
+
+### `dplyr` 資料轉換
+
+回想上一次我們做過的:
+
+```{r}
+mpg %>%
+  select(manufacturer, cty, hwy, class) %>%
+  filter(class %in% c("compact", "suv")) %>%
+  group_by(manufacturer, class) %>%
+  summarise(avg = mean(cty))
+```
+
+可是想加入高速公路油耗進行比較，要怎麼辦呢?複製貼上，改 `cty` 為 `hwy` 是一種作法，但不是很高明。如果要把製造商的 `cty` 和 `hwy` 的平均值整理在一起又要再多一個步驟。
+
+這件事情可以用 `summarise()` 一次做完:
+
+```{r}
+mpg %>%
+  select(manufacturer, cty, hwy, class) %>%
+  filter(class %in% c("compact", "suv")) %>%
+  group_by(manufacturer) %>%
+  summarise(cty_avg = mean(cty), hwy_avg = mean(hwy))
+```
+
+可是現在沒辦法直接看出哪個製造商的平均油耗最高最低，我們想要排列資料:
+
+```{r}
+mpg %>%
+  select(manufacturer, cty, hwy, class) %>%
+  filter(class %in% c("compact", "suv")) %>%
+  group_by(manufacturer) %>%
+  summarise(cty_avg = mean(cty), hwy_avg = mean(hwy)) %>%
+  arrange(cty_avg)
+```
+
+`arrange()` **由小到大**排列 `cty_avg` 這個變數。
+希望油耗表現最好的排在第一位，就用 `desc()` 包住 `cty_avg`。
+
+```{r}
+mpg %>%
+  select(manufacturer, cty, hwy, class) %>%
+  filter(class %in% c("compact", "suv")) %>%
+  group_by(manufacturer) %>%
+  summarise(cty_avg = mean(cty), hwy_avg = mean(hwy)) %>%
+  arrange(desc(cty_avg))
+```
+
+市區油耗的表現都不如高速公路的油耗，可能是因為市區會一直塞車，走走停停，所以油耗表現比較差。但是差距有多少呢?
+
+```{r}
+mpg %>%
+  select(manufacturer, cty, hwy, class) %>%
+  filter(class %in% c("compact", "suv")) %>%
+  group_by(manufacturer) %>%
+  summarise(cty_avg = mean(cty), hwy_avg = mean(hwy)) %>%
+  mutate(difference = hwy_avg - cty_avg)
+```
+
+`mutate()` 新增變數，變數命名為 `difference`，是計算 
+`hwy_avg` 和 `cty_avg` 的差異，
+`-` 跟你想的應該一樣，代表減法。
+
+### `ggplot2` 資料視覺化
+
+回想上一次我們做過的:
+
+```{r}
+ggplot(data = mpg) +
+  geom_point(mapping = aes(x = cty, y = hwy))
+```
+
+寫法有其他種類的變形，來比較一下:
+
+```{r, eval=FALSE}
+mpg %>%
+  ggplot(aes(cty, hwy)) +
+    geom_point()
+
+ggplot(mpg, aes(cty, hwy)) +
+  geom_point()
+
+ggplot(mpg) +
+  geom_point(aes(cty, hwy))
+
+mpg %>% 
+  ggplot() +
+    geom_point(aes(cty, hwy))
+```
+
+第一種是把資料擺在 `ggplot()` 外頭，再用 `%>%` 傳到下一步驟。
+
+第二種是把資料擺在 `ggplot()` 裡面。
+
+第三種把美學擺在畫圖的方式。
+
+或許你能寫出第四種，再想第五種...
+
+但是，別寫成這樣，是錯的:
+
+```{r, error=TRUE}
+ggplot(mpg, cty, hwy) +
+  geom_point()
+
+ggplot(mpg) +
+  geom_point(cty, hwy)
+```
+
+在回到剛才整理過的資料，現在要以視覺化的方式呈現，我們想看出市區與高速公路油耗的差異:
+
+```{r}
+mpg %>%
+  select(manufacturer, cty, hwy, class) %>%
+  filter(class %in% c("compact", "suv")) %>%
+  group_by(manufacturer) %>%
+  summarise(cty_avg = mean(cty), hwy_avg = mean(hwy)) %>%
+  mutate(difference = hwy_avg - cty_avg) %>%
+  ggplot() +
+  geom_col(aes(manufacturer, hwy_avg), 
+           alpha = 0.2, fill = "orange", color = "darkorange") +
+  geom_col(aes(manufacturer, difference), 
+           alpha = 0.3, fill = "violet", color = "purple") +
+  coord_flip() +
+  theme_classic()
+```
+
+`geom_col()` 和 `geom_boxplot()` 都適用於雙變數，一個離散，一個連續。也許你可以試著疊加盒鬚圖與長條圖。
+
+只要用顏色就能區分即可，所以使用 `difference` 比 `cty_avg` 更適當。
+
+當然可以自行嘗試使用 `cty_avg` 的後果。
+
+`alpha` 設定透明度。
+
+`fill` 填滿顏色。
+
+`color` 邊框顏色。
+
+
+
