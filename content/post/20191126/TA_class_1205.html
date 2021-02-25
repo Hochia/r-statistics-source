@@ -11,6 +11,7 @@ categories: ["R"]
 tags: ["R Markdown", "tidyverse"]
 ---
 
+<script src="/r-statistics/rmarkdown-libs/header-attrs/header-attrs.js"></script>
 
 
 <div id="單組樣本的假設檢定" class="section level2 tabset tabset-pills tabset-fade">
@@ -93,7 +94,7 @@ H_1: &amp; \mu = 2
 \end{array} \right.
 \end{aligned}
 \]</span></p>
-<p><img src="/post/20191126/TA_class_1205_files/figure-html/unnamed-chunk-1-1.png" width="672" /></p>
+<p><img src="/r-statistics/post/20191126/TA_class_1205_files/figure-html/unnamed-chunk-1-1.png" width="672" /></p>
 <p>上面的兩張圖，是以<span class="math inline">\(0.05\)</span>的顯著水準為例，說明在不同的臨界值，型一誤差與型二誤差的權衡。</p>
 <p>上方的圖表示在不同參數下所對應的檢定統計量的機率分布，紅色實線表示虛無假設的參數所對應的檢定統計量的機率分布，藍色實線表示對立假設的參數所對應的檢定統計量的機率分布。紅色虛線表示臨界值。下方的圖表示在這個臨界值之下的型一誤差與型二誤差。當我們選定不同的臨界值，型一誤差與型二誤差也會隨之變動，是所謂型一誤差與型二誤差的權衡。</p>
 <p>接著舉例說明檢定力函數。再次以右尾檢定為例。<span class="math inline">\(30\)</span>個樣本，檢定母體平均數是否小於<span class="math inline">\(100\)</span>，其中母體變異數已知為<span class="math inline">\(9\)</span>。</p>
@@ -105,7 +106,7 @@ H_1: &amp; \mu &gt; 100
 \end{array} \right.
 \end{aligned}
 \]</span></p>
-<p><img src="/post/20191126/TA_class_1205_files/figure-html/unnamed-chunk-2-1.png" width="672" /></p>
+<p><img src="/r-statistics/post/20191126/TA_class_1205_files/figure-html/unnamed-chunk-2-1.png" width="672" /></p>
 <p>上圖表示在不同顯著水準之下的檢定力函數。紅色虛線表示<span class="math inline">\(\mu=100\)</span>。雖然無法知道母體平均數為何，但可以了解不同的母體平均數所對應的型一誤差與型二誤差。</p>
 <p>接著我們來談 p-value。舉例來說，雙尾檢定常態分配的平均值，變異數已知的情況下，我們在顯著水準<span class="math inline">\(0.05\)</span>時，拒絕虛無假設，也就是檢定統計量大於<span class="math inline">\(1.96\)</span>時，回報在顯著水準<span class="math inline">\(0.05\)</span>時拒絕虛無假設。這樣一來，即使是不相等的檢定統計量，也會得到相同的回報，這樣的回報並沒有太大的效用。如果另外一個研究員想用不同的顯著水準來了解是否拒絕某個檢定統計量，該如何處理?</p>
 <p>因此我們在實驗開始前不選定顯著水準，只想了解在哪個顯著水準之下會拒絕虛無假設。從實驗得到統計量，統計量換算出的顯著水準稱為 p-value，

@@ -11,6 +11,7 @@ categories: ["R"]
 tags: ["R Markdown", "tidyverse"]
 ---
 
+<script src="/r-statistics/rmarkdown-libs/header-attrs/header-attrs.js"></script>
 
 
 <div id="預備" class="section level2">
@@ -26,7 +27,7 @@ tags: ["R Markdown", "tidyverse"]
 <p>以 <code>iris</code> 資料為例:</p>
 <pre class="r"><code>ggplot(iris) +
   geom_boxplot(aes(Species, Petal.Width, color = Species))</code></pre>
-<p><img src="/post/20191216/TA_class_1219_files/figure-html/unnamed-chunk-2-1.png" width="672" /></p>
+<p><img src="/r-statistics/post/20191216/TA_class_1219_files/figure-html/unnamed-chunk-2-1.png" width="672" /></p>
 <pre class="r"><code># 法一
 iris.lm &lt;- lm(Petal.Width~Species, data = iris)
 iris.anova &lt;- anova(iris.lm)
@@ -60,7 +61,7 @@ summary(aov.method2)</code></pre>
 df1</code></pre>
 <pre><code>#&gt; # A tibble: 3 x 3
 #&gt;   Species     mean sqare_error
-#&gt;   &lt;fct&gt;      &lt;dbl&gt;       &lt;dbl&gt;
+#&gt; * &lt;fct&gt;      &lt;dbl&gt;       &lt;dbl&gt;
 #&gt; 1 setosa     0.246       0.544
 #&gt; 2 versicolor 1.33        1.92 
 #&gt; 3 virginica  2.03        3.70</code></pre>
@@ -101,7 +102,7 @@ SSW &lt;- sum(df1$sqare_error)
 <pre class="r"><code>x &lt;- rf(10000, 2, 147)
 y &lt;- df(x, 2, 147)
 plot(x, y)</code></pre>
-<p><img src="/post/20191216/TA_class_1219_files/figure-html/unnamed-chunk-12-1.png" width="672" /></p>
+<p><img src="/r-statistics/post/20191216/TA_class_1219_files/figure-html/unnamed-chunk-12-1.png" width="672" /></p>
 <p>從上圖可以看出 F-value 大的時候，機率接近 0。因此 <span class="math inline">\(Pr(&gt;F) &lt; 2.2e-16\)</span></p>
 <pre class="r"><code>1 - pf(960.01, df1 = 2, df2 = 147) </code></pre>
 <pre><code>#&gt; [1] 0</code></pre>
@@ -164,7 +165,7 @@ data2</code></pre>
 <p>因為每個項目只有一個樣本，所以使用 <code>geom_point()</code> 畫圖，如果多於一個樣本，畫 <code>geom_boxplot()</code> 更為合適。</p>
 <pre class="r"><code>ggplot(data2, aes(road, time, color = driver)) +
   geom_point()</code></pre>
-<p><img src="/post/20191216/TA_class_1219_files/figure-html/unnamed-chunk-17-1.png" width="672" /></p>
+<p><img src="/r-statistics/post/20191216/TA_class_1219_files/figure-html/unnamed-chunk-17-1.png" width="672" /></p>
 <p>以下示範三種方法的程式碼:</p>
 <pre class="r"><code># 法一
 two.way.anova.1 &lt;- lm(time ~ road + driver, data = data2)
@@ -269,7 +270,7 @@ mfr &lt;- data2.int %&gt;%
 mfr</code></pre>
 <pre><code>#&gt; # A tibble: 4 x 2
 #&gt;   road  means_for_route
-#&gt;   &lt;chr&gt;           &lt;dbl&gt;
+#&gt; * &lt;chr&gt;           &lt;dbl&gt;
 #&gt; 1 A                20  
 #&gt; 2 B                21.7
 #&gt; 3 C                25.4
@@ -282,7 +283,7 @@ mfd &lt;- data2.int %&gt;%
 mfd</code></pre>
 <pre><code>#&gt; # A tibble: 5 x 2
 #&gt;   driver     means_for_driver
-#&gt;   &lt;fct&gt;                 &lt;dbl&gt;
+#&gt; * &lt;fct&gt;                 &lt;dbl&gt;
 #&gt; 1 Hamilton               19.5
 #&gt; 2 Bottas                 20.8
 #&gt; 3 Verstappen             22.2
@@ -307,7 +308,8 @@ data2.int %&gt;%
   ggplot(aes(road, time, color = driver)) +
   geom_point() +
   geom_line(aes(group = driver))</code></pre>
-<p><img src="/post/20191216/TA_class_1219_files/figure-html/unnamed-chunk-25-1.png" width="672" /></p>
+<pre><code>#&gt; `summarise()` has grouped output by &#39;driver&#39;. You can override using the `.groups` argument.</code></pre>
+<p><img src="/r-statistics/post/20191216/TA_class_1219_files/figure-html/unnamed-chunk-25-1.png" width="672" /></p>
 <p>考慮交互作用的假設檢定如下:</p>
 <p><span class="math display">\[
 \begin{aligned} 

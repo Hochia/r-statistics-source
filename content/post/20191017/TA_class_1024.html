@@ -11,15 +11,16 @@ categories: ["R"]
 tags: ["R Markdown", "tidyverse"]
 ---
 
-<script src="/rmarkdown-libs/htmlwidgets/htmlwidgets.js"></script>
-<script src="/rmarkdown-libs/jquery/jquery.min.js"></script>
-<link href="/rmarkdown-libs/datatables-css/datatables-crosstalk.css" rel="stylesheet" />
-<script src="/rmarkdown-libs/datatables-binding/datatables.js"></script>
-<link href="/rmarkdown-libs/dt-core/css/jquery.dataTables.min.css" rel="stylesheet" />
-<link href="/rmarkdown-libs/dt-core/css/jquery.dataTables.extra.css" rel="stylesheet" />
-<script src="/rmarkdown-libs/dt-core/js/jquery.dataTables.min.js"></script>
-<link href="/rmarkdown-libs/crosstalk/css/crosstalk.css" rel="stylesheet" />
-<script src="/rmarkdown-libs/crosstalk/js/crosstalk.min.js"></script>
+<script src="/r-statistics/rmarkdown-libs/header-attrs/header-attrs.js"></script>
+<script src="/r-statistics/rmarkdown-libs/htmlwidgets/htmlwidgets.js"></script>
+<script src="/r-statistics/rmarkdown-libs/jquery/jquery.min.js"></script>
+<link href="/r-statistics/rmarkdown-libs/datatables-css/datatables-crosstalk.css" rel="stylesheet" />
+<script src="/r-statistics/rmarkdown-libs/datatables-binding/datatables.js"></script>
+<link href="/r-statistics/rmarkdown-libs/dt-core/css/jquery.dataTables.min.css" rel="stylesheet" />
+<link href="/r-statistics/rmarkdown-libs/dt-core/css/jquery.dataTables.extra.css" rel="stylesheet" />
+<script src="/r-statistics/rmarkdown-libs/dt-core/js/jquery.dataTables.min.js"></script>
+<link href="/r-statistics/rmarkdown-libs/crosstalk/css/crosstalk.css" rel="stylesheet" />
+<script src="/r-statistics/rmarkdown-libs/crosstalk/js/crosstalk.min.js"></script>
 
 
 <div id="預備" class="section level2">
@@ -44,12 +45,12 @@ tags: ["R Markdown", "tidyverse"]
 </blockquote>
 <p>在呼叫 <code>tidyverse</code> 的時候會看到下面的資訊:</p>
 <pre class="r"><code>library(tidyverse)</code></pre>
-<pre><code>#&gt; -- Attaching packages --------------------</code></pre>
-<pre><code>#&gt; √ ggplot2 3.2.1     √ purrr   0.3.2
-#&gt; √ tibble  2.1.3     √ dplyr   0.8.3
-#&gt; √ tidyr   1.0.0     √ stringr 1.4.0
-#&gt; √ readr   1.3.1     √ forcats 0.4.0</code></pre>
-<pre><code>#&gt; -- Conflicts ---- tidyverse_conflicts() --
+<pre><code>#&gt; -- Attaching packages --------------------------------------- tidyverse 1.3.0 --</code></pre>
+<pre><code>#&gt; √ ggplot2 3.3.3     √ purrr   0.3.4
+#&gt; √ tibble  3.0.6     √ dplyr   1.0.4
+#&gt; √ tidyr   1.1.2     √ stringr 1.4.0
+#&gt; √ readr   1.4.0     √ forcats 0.5.1</code></pre>
+<pre><code>#&gt; -- Conflicts ------------------------------------------ tidyverse_conflicts() --
 #&gt; x dplyr::filter() masks stats::filter()
 #&gt; x dplyr::lag()    masks stats::lag()</code></pre>
 <p><code>tidyverse</code> 整合 <code>ggplot2</code>, <code>purrr</code>, <code>tibble</code>, <code>dplyr</code>, <code>tidyr</code>, <code>stringr</code>, <code>readr</code>, <code>forcats</code>，海羅了處理資料的基本方法。</p>
@@ -131,6 +132,7 @@ tags: ["R Markdown", "tidyverse"]
   filter(class %in% c(&quot;compact&quot;, &quot;suv&quot;)) %&gt;%
   group_by(manufacturer, class) %&gt;%
   summarise(avg = mean(cty))</code></pre>
+<pre><code>#&gt; `summarise()` has grouped output by &#39;manufacturer&#39;. You can override using the `.groups` argument.</code></pre>
 <pre><code>#&gt; # A tibble: 15 x 3
 #&gt; # Groups:   manufacturer [12]
 #&gt;    manufacturer class     avg
@@ -158,7 +160,7 @@ tags: ["R Markdown", "tidyverse"]
 <h3><code>ggplot2</code> 資料視覺化</h3>
 <pre class="r"><code>ggplot(data = mpg) +
   geom_point(mapping = aes(x = cty, y = hwy))</code></pre>
-<p><img src="/post/20191017/TA_class_1024_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
+<p><img src="/r-statistics/post/20191017/TA_class_1024_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
 <p>看到 <code>ggplot()</code> 代表要畫圖了，裡面第一個位置放資料 <code>mpg</code>。</p>
 <p>這裡的 <code>+</code> 可能跟你想的加法不一樣，
 接在 <code>ggplot2</code> 包的函數後面，
@@ -178,16 +180,17 @@ tags: ["R Markdown", "tidyverse"]
 <p>通常會把函數的名稱省略，所以 <code>data</code>、<code>mapping</code>、<code>x</code>、<code>y</code> 都可以省略。但是不能更改他們擺放的順序。所以下面兩個是完全不同的映射方式。</p>
 <pre class="r"><code>ggplot(mpg) +
   geom_point(aes(cty, hwy))</code></pre>
-<p><img src="/post/20191017/TA_class_1024_files/figure-html/unnamed-chunk-9-1.png" width="672" /></p>
+<p><img src="/r-statistics/post/20191017/TA_class_1024_files/figure-html/unnamed-chunk-9-1.png" width="672" /></p>
 <pre class="r"><code>
 ggplot(mpg) +
   geom_point(aes(hwy, cty))</code></pre>
-<p><img src="/post/20191017/TA_class_1024_files/figure-html/unnamed-chunk-9-2.png" width="672" /></p>
+<p><img src="/r-statistics/post/20191017/TA_class_1024_files/figure-html/unnamed-chunk-9-2.png" width="672" /></p>
 <p>如果要畫兩種以上的圖，只要用 <code>+</code> 連接即可:</p>
 <pre class="r"><code>ggplot(data = mpg, mapping = aes(x = cty, y = hwy)) +
   geom_point() +
   geom_smooth(method = lm)</code></pre>
-<p><img src="/post/20191017/TA_class_1024_files/figure-html/unnamed-chunk-10-1.png" width="672" /></p>
+<pre><code>#&gt; `geom_smooth()` using formula &#39;y ~ x&#39;</code></pre>
+<p><img src="/r-statistics/post/20191017/TA_class_1024_files/figure-html/unnamed-chunk-10-1.png" width="672" /></p>
 <p><code>geom_smooth(method = lm)</code> 是指用線性迴歸畫圖，在此不深究這個問題。</p>
 </div>
 </div>

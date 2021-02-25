@@ -11,6 +11,7 @@ categories: ["R"]
 tags: ["R Markdown", "tidyverse"]
 ---
 
+<script src="/r-statistics/rmarkdown-libs/header-attrs/header-attrs.js"></script>
 
 
 <div id="預備" class="section level2">
@@ -31,7 +32,7 @@ t.test(formula, data, subset, na.action, …)</code></pre>
 <h3>單組樣本</h3>
 <p>先透過畫圖與敘述統計量了解資料的樣貌。再進行假設檢定的步驟。</p>
 <pre class="r"><code>boxplot(mpg$cty)</code></pre>
-<p><img src="/post/20191203/TA_class_1212_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
+<p><img src="/r-statistics/post/20191203/TA_class_1212_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
 <pre class="r"><code>summary(mpg$cty)</code></pre>
 <pre><code>#&gt;    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
 #&gt;    9.00   14.00   17.00   16.86   19.00   35.00</code></pre>
@@ -98,7 +99,7 @@ hy.cty</code></pre>
 
 ggplot(df) +
   geom_boxplot(aes(mpg, value))</code></pre>
-<p><img src="/post/20191203/TA_class_1212_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
+<p><img src="/r-statistics/post/20191203/TA_class_1212_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
 <p>假設兩組樣本皆屬於常態分配的情況下，檢驗兩組樣本的變異數是否有顯著差異。</p>
 <pre class="r"><code># S3 method for default
 var.test(x, y, ratio = 1,

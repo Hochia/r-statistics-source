@@ -12,7 +12,7 @@ tags: ["R Markdown", "tidyverse"]
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE, comment = "#>", cache = TRUE)
+knitr::opts_chunk$set(echo = TRUE, comment = "#>", cache = FALSE)
 library(DT)
 ```
 

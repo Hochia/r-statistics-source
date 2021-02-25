@@ -11,6 +11,7 @@ categories: ["R"]
 tags: ["R Markdown", "tidyverse"]
 ---
 
+<script src="/r-statistics/rmarkdown-libs/header-attrs/header-attrs.js"></script>
 
 
 <div id="預備" class="section level2">
@@ -27,6 +28,7 @@ tags: ["R Markdown", "tidyverse"]
   filter(class %in% c(&quot;compact&quot;, &quot;suv&quot;)) %&gt;%
   group_by(manufacturer, class) %&gt;%
   summarise(avg = mean(cty))</code></pre>
+<pre><code>#&gt; `summarise()` has grouped output by &#39;manufacturer&#39;. You can override using the `.groups` argument.</code></pre>
 <pre><code>#&gt; # A tibble: 15 x 3
 #&gt; # Groups:   manufacturer [12]
 #&gt;    manufacturer class     avg
@@ -55,7 +57,7 @@ tags: ["R Markdown", "tidyverse"]
   summarise(cty_avg = mean(cty), hwy_avg = mean(hwy))</code></pre>
 <pre><code>#&gt; # A tibble: 12 x 3
 #&gt;    manufacturer cty_avg hwy_avg
-#&gt;    &lt;chr&gt;          &lt;dbl&gt;   &lt;dbl&gt;
+#&gt;  * &lt;chr&gt;          &lt;dbl&gt;   &lt;dbl&gt;
 #&gt;  1 audi            17.9    26.9
 #&gt;  2 chevrolet       12.7    17.1
 #&gt;  3 dodge           11.9    16  
@@ -122,7 +124,7 @@ tags: ["R Markdown", "tidyverse"]
   mutate(difference = hwy_avg - cty_avg)</code></pre>
 <pre><code>#&gt; # A tibble: 12 x 4
 #&gt;    manufacturer cty_avg hwy_avg difference
-#&gt;    &lt;chr&gt;          &lt;dbl&gt;   &lt;dbl&gt;      &lt;dbl&gt;
+#&gt;  * &lt;chr&gt;          &lt;dbl&gt;   &lt;dbl&gt;      &lt;dbl&gt;
 #&gt;  1 audi            17.9    26.9       9   
 #&gt;  2 chevrolet       12.7    17.1       4.44
 #&gt;  3 dodge           11.9    16         4.14
@@ -144,7 +146,7 @@ tags: ["R Markdown", "tidyverse"]
 <p>回想上一次我們做過的:</p>
 <pre class="r"><code>ggplot(data = mpg) +
   geom_point(mapping = aes(x = cty, y = hwy))</code></pre>
-<p><img src="/post/20191018/TA_class_1031_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
+<p><img src="/r-statistics/post/20191018/TA_class_1031_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
 <p>寫法有其他種類的變形，來比較一下:</p>
 <pre class="r"><code>mpg %&gt;%
   ggplot(aes(cty, hwy)) +
@@ -166,10 +168,10 @@ mpg %&gt;%
 <p>但是，別寫成這樣，是錯的:</p>
 <pre class="r"><code>ggplot(mpg, cty, hwy) +
   geom_point()</code></pre>
-<pre><code>#&gt; Error in ggplot.default(mpg, cty, hwy): 找不到物件 &#39;cty&#39;</code></pre>
+<pre><code>#&gt; Error in ggplot.default(mpg, cty, hwy): object &#39;cty&#39; not found</code></pre>
 <pre class="r"><code>ggplot(mpg) +
   geom_point(cty, hwy)</code></pre>
-<pre><code>#&gt; Error in layer(data = data, mapping = mapping, stat = stat, geom = GeomPoint, : 找不到物件 &#39;cty&#39;</code></pre>
+<pre><code>#&gt; Error in layer(data = data, mapping = mapping, stat = stat, geom = GeomPoint, : object &#39;cty&#39; not found</code></pre>
 <p>在回到剛才整理過的資料，現在要以視覺化的方式呈現，我們想看出市區與高速公路油耗的差異:</p>
 <pre class="r"><code>mpg %&gt;%
   select(manufacturer, cty, hwy, class) %&gt;%
@@ -184,7 +186,7 @@ mpg %&gt;%
            alpha = 0.3, fill = &quot;violet&quot;, color = &quot;purple&quot;) +
   coord_flip() +
   theme_classic()</code></pre>
-<p><img src="/post/20191018/TA_class_1031_files/figure-html/unnamed-chunk-10-1.png" width="672" /></p>
+<p><img src="/r-statistics/post/20191018/TA_class_1031_files/figure-html/unnamed-chunk-10-1.png" width="672" /></p>
 <p><code>geom_col()</code> 和 <code>geom_boxplot()</code> 都適用於雙變數，一個離散，一個連續。也許你可以試著疊加盒鬚圖與長條圖。</p>
 <p>只要用顏色就能區分即可，所以使用 <code>difference</code> 比 <code>cty_avg</code> 更適當。</p>
 <p>當然可以自行嘗試使用 <code>cty_avg</code> 的後果。</p>

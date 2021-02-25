@@ -12,7 +12,7 @@ tags: ["R Markdown", "tidyverse"]
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE, fig.align = "center", comment = "#>")
+knitr::opts_chunk$set(echo = TRUE, fig.align = "center", comment = "#>", cache = FALSE)
 ```
 
 # New Project

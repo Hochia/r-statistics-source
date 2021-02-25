@@ -12,7 +12,7 @@ tags: ["R Markdown", "plot", "regression"]
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(comment = "#>", collapse = TRUE, echo = TRUE, error = TRUE, cache = TRUE)
+knitr::opts_chunk$set(comment = "#>", collapse = TRUE, echo = TRUE, error = TRUE, cache = FALSE)
 library(tidyverse)
 ```
 

@@ -1,4 +1,4 @@
-baseurl = "https://hochia.github.io/r-statistics"
+baseurl = "https://hochia.github.io/r-statistics/"
 languageCode = "en-us"
 title = "Hochia learning R"
 theme = "hugo-lithium"

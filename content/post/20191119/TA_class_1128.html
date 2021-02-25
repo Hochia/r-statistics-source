@@ -11,6 +11,7 @@ categories: ["R"]
 tags: ["R Markdown", "tidyverse"]
 ---
 
+<script src="/r-statistics/rmarkdown-libs/header-attrs/header-attrs.js"></script>
 
 
 <div id="預備" class="section level2">
@@ -55,65 +56,63 @@ load(&quot;mydata.RData&quot;)</code></pre>
 <p>以 ggplot2::msleep 為例，有許多變數的觀測值並沒有被紀錄。</p>
 <pre class="r"><code>ggplot2::msleep</code></pre>
 <pre><code>#&gt; # A tibble: 83 x 11
-#&gt;    name  genus vore  order conservation sleep_total sleep_rem sleep_cycle
-#&gt;    &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt;              &lt;dbl&gt;     &lt;dbl&gt;       &lt;dbl&gt;
-#&gt;  1 Chee~ Acin~ carni Carn~ lc                  12.1      NA        NA    
-#&gt;  2 Owl ~ Aotus omni  Prim~ &lt;NA&gt;                17         1.8      NA    
-#&gt;  3 Moun~ Aplo~ herbi Rode~ nt                  14.4       2.4      NA    
-#&gt;  4 Grea~ Blar~ omni  Sori~ lc                  14.9       2.3       0.133
-#&gt;  5 Cow   Bos   herbi Arti~ domesticated         4         0.7       0.667
-#&gt;  6 Thre~ Brad~ herbi Pilo~ &lt;NA&gt;                14.4       2.2       0.767
-#&gt;  7 Nort~ Call~ carni Carn~ vu                   8.7       1.4       0.383
-#&gt;  8 Vesp~ Calo~ &lt;NA&gt;  Rode~ &lt;NA&gt;                 7        NA        NA    
-#&gt;  9 Dog   Canis carni Carn~ domesticated        10.1       2.9       0.333
-#&gt; 10 Roe ~ Capr~ herbi Arti~ lc                   3        NA        NA    
-#&gt; # ... with 73 more rows, and 3 more variables: awake &lt;dbl&gt;, brainwt &lt;dbl&gt;,
-#&gt; #   bodywt &lt;dbl&gt;</code></pre>
+#&gt;    name   genus vore  order conservation sleep_total sleep_rem sleep_cycle awake
+#&gt;    &lt;chr&gt;  &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt;              &lt;dbl&gt;     &lt;dbl&gt;       &lt;dbl&gt; &lt;dbl&gt;
+#&gt;  1 Cheet~ Acin~ carni Carn~ lc                  12.1      NA        NA      11.9
+#&gt;  2 Owl m~ Aotus omni  Prim~ &lt;NA&gt;                17         1.8      NA       7  
+#&gt;  3 Mount~ Aplo~ herbi Rode~ nt                  14.4       2.4      NA       9.6
+#&gt;  4 Great~ Blar~ omni  Sori~ lc                  14.9       2.3       0.133   9.1
+#&gt;  5 Cow    Bos   herbi Arti~ domesticated         4         0.7       0.667  20  
+#&gt;  6 Three~ Brad~ herbi Pilo~ &lt;NA&gt;                14.4       2.2       0.767   9.6
+#&gt;  7 North~ Call~ carni Carn~ vu                   8.7       1.4       0.383  15.3
+#&gt;  8 Vespe~ Calo~ &lt;NA&gt;  Rode~ &lt;NA&gt;                 7        NA        NA      17  
+#&gt;  9 Dog    Canis carni Carn~ domesticated        10.1       2.9       0.333  13.9
+#&gt; 10 Roe d~ Capr~ herbi Arti~ lc                   3        NA        NA      21  
+#&gt; # ... with 73 more rows, and 2 more variables: brainwt &lt;dbl&gt;, bodywt &lt;dbl&gt;</code></pre>
 <p>使用 <code>dplyr::drop_na()</code> 可以將有遺漏的數據整筆刪除。</p>
 <pre class="r"><code>df &lt;- msleep %&gt;% drop_na()
 df</code></pre>
 <pre><code>#&gt; # A tibble: 20 x 11
-#&gt;    name  genus vore  order conservation sleep_total sleep_rem sleep_cycle
-#&gt;    &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt;              &lt;dbl&gt;     &lt;dbl&gt;       &lt;dbl&gt;
-#&gt;  1 Grea~ Blar~ omni  Sori~ lc                  14.9       2.3       0.133
-#&gt;  2 Cow   Bos   herbi Arti~ domesticated         4         0.7       0.667
-#&gt;  3 Dog   Canis carni Carn~ domesticated        10.1       2.9       0.333
-#&gt;  4 Guin~ Cavis herbi Rode~ domesticated         9.4       0.8       0.217
-#&gt;  5 Chin~ Chin~ herbi Rode~ domesticated        12.5       1.5       0.117
-#&gt;  6 Less~ Cryp~ omni  Sori~ lc                   9.1       1.4       0.15 
-#&gt;  7 Long~ Dasy~ carni Cing~ lc                  17.4       3.1       0.383
-#&gt;  8 Nort~ Dide~ omni  Dide~ lc                  18         4.9       0.333
-#&gt;  9 Big ~ Epte~ inse~ Chir~ lc                  19.7       3.9       0.117
-#&gt; 10 Horse Equus herbi Peri~ domesticated         2.9       0.6       1    
-#&gt; 11 Euro~ Erin~ omni  Erin~ lc                  10.1       3.5       0.283
-#&gt; 12 Dome~ Felis carni Carn~ domesticated        12.5       3.2       0.417
-#&gt; 13 Gold~ Meso~ herbi Rode~ en                  14.3       3.1       0.2  
-#&gt; 14 Hous~ Mus   herbi Rode~ nt                  12.5       1.4       0.183
-#&gt; 15 Rabb~ Oryc~ herbi Lago~ domesticated         8.4       0.9       0.417
-#&gt; 16 Labo~ Ratt~ herbi Rode~ lc                  13         2.4       0.183
-#&gt; 17 East~ Scal~ inse~ Sori~ lc                   8.4       2.1       0.167
-#&gt; 18 Thir~ Sper~ herbi Rode~ lc                  13.8       3.4       0.217
-#&gt; 19 Pig   Sus   omni  Arti~ domesticated         9.1       2.4       0.5  
-#&gt; 20 Braz~ Tapi~ herbi Peri~ vu                   4.4       1         0.9  
-#&gt; # ... with 3 more variables: awake &lt;dbl&gt;, brainwt &lt;dbl&gt;, bodywt &lt;dbl&gt;</code></pre>
+#&gt;    name   genus vore  order conservation sleep_total sleep_rem sleep_cycle awake
+#&gt;    &lt;chr&gt;  &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt;              &lt;dbl&gt;     &lt;dbl&gt;       &lt;dbl&gt; &lt;dbl&gt;
+#&gt;  1 Great~ Blar~ omni  Sori~ lc                  14.9       2.3       0.133   9.1
+#&gt;  2 Cow    Bos   herbi Arti~ domesticated         4         0.7       0.667  20  
+#&gt;  3 Dog    Canis carni Carn~ domesticated        10.1       2.9       0.333  13.9
+#&gt;  4 Guine~ Cavis herbi Rode~ domesticated         9.4       0.8       0.217  14.6
+#&gt;  5 Chinc~ Chin~ herbi Rode~ domesticated        12.5       1.5       0.117  11.5
+#&gt;  6 Lesse~ Cryp~ omni  Sori~ lc                   9.1       1.4       0.15   14.9
+#&gt;  7 Long-~ Dasy~ carni Cing~ lc                  17.4       3.1       0.383   6.6
+#&gt;  8 North~ Dide~ omni  Dide~ lc                  18         4.9       0.333   6  
+#&gt;  9 Big b~ Epte~ inse~ Chir~ lc                  19.7       3.9       0.117   4.3
+#&gt; 10 Horse  Equus herbi Peri~ domesticated         2.9       0.6       1      21.1
+#&gt; 11 Europ~ Erin~ omni  Erin~ lc                  10.1       3.5       0.283  13.9
+#&gt; 12 Domes~ Felis carni Carn~ domesticated        12.5       3.2       0.417  11.5
+#&gt; 13 Golde~ Meso~ herbi Rode~ en                  14.3       3.1       0.2     9.7
+#&gt; 14 House~ Mus   herbi Rode~ nt                  12.5       1.4       0.183  11.5
+#&gt; 15 Rabbit Oryc~ herbi Lago~ domesticated         8.4       0.9       0.417  15.6
+#&gt; 16 Labor~ Ratt~ herbi Rode~ lc                  13         2.4       0.183  11  
+#&gt; 17 Easte~ Scal~ inse~ Sori~ lc                   8.4       2.1       0.167  15.6
+#&gt; 18 Thirt~ Sper~ herbi Rode~ lc                  13.8       3.4       0.217  10.2
+#&gt; 19 Pig    Sus   omni  Arti~ domesticated         9.1       2.4       0.5    14.9
+#&gt; 20 Brazi~ Tapi~ herbi Peri~ vu                   4.4       1         0.9    19.6
+#&gt; # ... with 2 more variables: brainwt &lt;dbl&gt;, bodywt &lt;dbl&gt;</code></pre>
 <p>也可以針對某些變數的缺失值做處理。</p>
 <pre class="r"><code>df2 &lt;- msleep %&gt;% drop_na(sleep_rem)
 df2</code></pre>
 <pre><code>#&gt; # A tibble: 61 x 11
-#&gt;    name  genus vore  order conservation sleep_total sleep_rem sleep_cycle
-#&gt;    &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt;              &lt;dbl&gt;     &lt;dbl&gt;       &lt;dbl&gt;
-#&gt;  1 Owl ~ Aotus omni  Prim~ &lt;NA&gt;                17         1.8      NA    
-#&gt;  2 Moun~ Aplo~ herbi Rode~ nt                  14.4       2.4      NA    
-#&gt;  3 Grea~ Blar~ omni  Sori~ lc                  14.9       2.3       0.133
-#&gt;  4 Cow   Bos   herbi Arti~ domesticated         4         0.7       0.667
-#&gt;  5 Thre~ Brad~ herbi Pilo~ &lt;NA&gt;                14.4       2.2       0.767
-#&gt;  6 Nort~ Call~ carni Carn~ vu                   8.7       1.4       0.383
-#&gt;  7 Dog   Canis carni Carn~ domesticated        10.1       2.9       0.333
-#&gt;  8 Goat  Capri herbi Arti~ lc                   5.3       0.6      NA    
-#&gt;  9 Guin~ Cavis herbi Rode~ domesticated         9.4       0.8       0.217
-#&gt; 10 Griv~ Cerc~ omni  Prim~ lc                  10         0.7      NA    
-#&gt; # ... with 51 more rows, and 3 more variables: awake &lt;dbl&gt;, brainwt &lt;dbl&gt;,
-#&gt; #   bodywt &lt;dbl&gt;</code></pre>
+#&gt;    name   genus vore  order conservation sleep_total sleep_rem sleep_cycle awake
+#&gt;    &lt;chr&gt;  &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt;              &lt;dbl&gt;     &lt;dbl&gt;       &lt;dbl&gt; &lt;dbl&gt;
+#&gt;  1 Owl m~ Aotus omni  Prim~ &lt;NA&gt;                17         1.8      NA       7  
+#&gt;  2 Mount~ Aplo~ herbi Rode~ nt                  14.4       2.4      NA       9.6
+#&gt;  3 Great~ Blar~ omni  Sori~ lc                  14.9       2.3       0.133   9.1
+#&gt;  4 Cow    Bos   herbi Arti~ domesticated         4         0.7       0.667  20  
+#&gt;  5 Three~ Brad~ herbi Pilo~ &lt;NA&gt;                14.4       2.2       0.767   9.6
+#&gt;  6 North~ Call~ carni Carn~ vu                   8.7       1.4       0.383  15.3
+#&gt;  7 Dog    Canis carni Carn~ domesticated        10.1       2.9       0.333  13.9
+#&gt;  8 Goat   Capri herbi Arti~ lc                   5.3       0.6      NA      18.7
+#&gt;  9 Guine~ Cavis herbi Rode~ domesticated         9.4       0.8       0.217  14.6
+#&gt; 10 Grivet Cerc~ omni  Prim~ lc                  10         0.7      NA      14  
+#&gt; # ... with 51 more rows, and 2 more variables: brainwt &lt;dbl&gt;, bodywt &lt;dbl&gt;</code></pre>
 </div>
 <div id="符號意義" class="section level2">
 <h2>符號意義</h2>
@@ -131,7 +130,7 @@ df2</code></pre>
 </div>
 <div id="標準常態分配與-t-分配" class="section level2">
 <h2>標準常態分配與 t 分配</h2>
-<p><img src="/post/20191119/TA_class_1128_files/figure-html/unnamed-chunk-9-1.png" width="672" /></p>
+<p><img src="/r-statistics/post/20191119/TA_class_1128_files/figure-html/unnamed-chunk-9-1.png" width="672" /></p>
 </div>
 <div id="信賴區間" class="section level2 tabset tabset-pills tabset-fade">
 <h2>信賴區間</h2>
@@ -177,7 +176,7 @@ ggplot() +
   geom_vline(xintercept = c(lower, upper),
              linetype = &quot;dashed&quot;,
              color = &quot;red&quot;)</code></pre>
-<p><img src="/post/20191119/TA_class_1128_files/figure-html/unnamed-chunk-10-1.png" width="672" /></p>
+<p><img src="/r-statistics/post/20191119/TA_class_1128_files/figure-html/unnamed-chunk-10-1.png" width="672" /></p>
 <pre class="r"><code>## 法二
 data &lt;- tibble(x = random.sample, 
                y = dnorm(random.sample, 0, 2))
@@ -188,7 +187,7 @@ ggplot(data) +
              linetype = &quot;dashed&quot;,
              color = &quot;red&quot;,
              size = 1)</code></pre>
-<p><img src="/post/20191119/TA_class_1128_files/figure-html/unnamed-chunk-10-2.png" width="672" /></p>
+<p><img src="/r-statistics/post/20191119/TA_class_1128_files/figure-html/unnamed-chunk-10-2.png" width="672" /></p>
 <pre class="r"><code>## 法三
 data &lt;- tibble(x = rnorm(100, 0, 2), 
                y = dnorm(x, 0, 2))
@@ -246,7 +245,7 @@ ggplot() +
   geom_vline(xintercept = c(lower, upper),
              linetype = &quot;dashed&quot;,
              color = &quot;red&quot;)</code></pre>
-<p><img src="/post/20191119/TA_class_1128_files/figure-html/unnamed-chunk-12-1.png" width="672" /></p>
+<p><img src="/r-statistics/post/20191119/TA_class_1128_files/figure-html/unnamed-chunk-12-1.png" width="672" /></p>
 </div>
 </div>
 <div id="驗證" class="section level2">
@@ -285,7 +284,7 @@ lower_upper</code></pre>
                size = 1) +
   labs(x = &quot;confidence interval&quot;,
        y = &quot;simulation&quot;)</code></pre>
-<p><img src="/post/20191119/TA_class_1128_files/figure-html/unnamed-chunk-13-1.png" width="672" /></p>
+<p><img src="/r-statistics/post/20191119/TA_class_1128_files/figure-html/unnamed-chunk-13-1.png" width="672" /></p>
 <pre class="r"><code>confidence &lt;- lower_upper %&gt;% 
   mutate(cover = 
            case_when(lower &gt; 0 | upper &lt; 0 ~ 0, 

@@ -11,6 +11,7 @@ categories: ["R"]
 tags: ["R Markdown", "tidyverse"]
 ---
 
+<script src="/r-statistics/rmarkdown-libs/header-attrs/header-attrs.js"></script>
 
 
 <div id="預備" class="section level2">
@@ -28,7 +29,7 @@ tags: ["R Markdown", "tidyverse"]
   summarise(cty_avg = mean(cty), hwy_avg = mean(hwy))</code></pre>
 <pre><code>#&gt; # A tibble: 5 x 3
 #&gt;   manufacturer cty_avg hwy_avg
-#&gt;   &lt;chr&gt;          &lt;dbl&gt;   &lt;dbl&gt;
+#&gt; * &lt;chr&gt;          &lt;dbl&gt;   &lt;dbl&gt;
 #&gt; 1 audi            17.9    26.9
 #&gt; 2 nissan          20      28  
 #&gt; 3 subaru          19.8    26  
@@ -44,7 +45,7 @@ tags: ["R Markdown", "tidyverse"]
 <pre class="r"><code>df</code></pre>
 <pre><code>#&gt; # A tibble: 5 x 3
 #&gt;   manufacturer cty_avg hwy_avg
-#&gt;   &lt;chr&gt;          &lt;dbl&gt;   &lt;dbl&gt;
+#&gt; * &lt;chr&gt;          &lt;dbl&gt;   &lt;dbl&gt;
 #&gt; 1 audi            17.9    26.9
 #&gt; 2 nissan          20      28  
 #&gt; 3 subaru          19.8    26  
@@ -70,18 +71,18 @@ tags: ["R Markdown", "tidyverse"]
   ggplot() +
   geom_col(aes(manufacturer, value)) +
   facet_wrap(~ avg)</code></pre>
-<p><img src="/post/20191108/TA_class_1114_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
+<p><img src="/r-statistics/post/20191108/TA_class_1114_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
 <pre class="r"><code>df %&gt;% 
   gather(cty_avg, hwy_avg, key = &quot;avg&quot;, value = &quot;value&quot;) %&gt;%
   ggplot() +
   geom_col(aes(avg, value)) +
   facet_wrap(~ manufacturer, nrow = 1)</code></pre>
-<p><img src="/post/20191108/TA_class_1114_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
+<p><img src="/r-statistics/post/20191108/TA_class_1114_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
 <p>現在開始解釋程式碼。</p>
 <pre class="r"><code>df</code></pre>
 <pre><code>#&gt; # A tibble: 5 x 3
 #&gt;   manufacturer cty_avg hwy_avg
-#&gt;   &lt;chr&gt;          &lt;dbl&gt;   &lt;dbl&gt;
+#&gt; * &lt;chr&gt;          &lt;dbl&gt;   &lt;dbl&gt;
 #&gt; 1 audi            17.9    26.9
 #&gt; 2 nissan          20      28  
 #&gt; 3 subaru          19.8    26  
@@ -111,7 +112,7 @@ tags: ["R Markdown", "tidyverse"]
   ggplot() +
   geom_col(aes(manufacturer, value)) +
   facet_wrap(~ avg)</code></pre>
-<p><img src="/post/20191108/TA_class_1114_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
+<p><img src="/r-statistics/post/20191108/TA_class_1114_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
 <p>原有資料在合併變數後更易於畫圖，可以避免疊圖的寫法，省去不必要的麻煩。</p>
 <p>取代疊圖的方法是 <code>facet_wrap()</code>，facet 譯作面向，
 注意，面向只能針對離散的資料處理。</p>
@@ -121,7 +122,7 @@ tags: ["R Markdown", "tidyverse"]
   ggplot() +
   geom_col(aes(avg, value)) +
   facet_wrap(~ manufacturer, nrow = 1)</code></pre>
-<p><img src="/post/20191108/TA_class_1114_files/figure-html/unnamed-chunk-9-1.png" width="672" /></p>
+<p><img src="/r-statistics/post/20191108/TA_class_1114_files/figure-html/unnamed-chunk-9-1.png" width="672" /></p>
 <p>最一開始問的問題是<strong>不同製造商的小型車在市區油耗和高速公路油耗的平均值</strong>，顯然這時候面向的變數是製造商更為貼切。</p>
 <p>每個面向都會產生一張圖，圖片的排列上可以用行列控制。
 比如範例設定 <code>nrow = 1</code>，和設定 <code>ncol = 5</code> 相同。</p>
@@ -131,7 +132,7 @@ tags: ["R Markdown", "tidyverse"]
   geom_col(aes(avg, value)) +
   facet_wrap(~ manufacturer, nrow = 1) +
   coord_flip()</code></pre>
-<p><img src="/post/20191108/TA_class_1114_files/figure-html/unnamed-chunk-10-1.png" width="672" /></p>
+<p><img src="/r-statistics/post/20191108/TA_class_1114_files/figure-html/unnamed-chunk-10-1.png" width="672" /></p>
 <p>也許你會想加上座標軸的翻轉，但你滿意這個結果嗎?</p>
 <pre class="r"><code>df %&gt;% 
   gather(cty_avg, hwy_avg, key = &quot;avg&quot;, value = &quot;value&quot;) %&gt;%
@@ -139,7 +140,7 @@ tags: ["R Markdown", "tidyverse"]
   geom_col(aes(avg, value)) +
   facet_wrap(~ manufacturer, nrow = 5) +
   coord_flip()</code></pre>
-<p><img src="/post/20191108/TA_class_1114_files/figure-html/unnamed-chunk-11-1.png" width="672" /></p>
+<p><img src="/r-statistics/post/20191108/TA_class_1114_files/figure-html/unnamed-chunk-11-1.png" width="672" /></p>
 <p>調整行列顯示的圖片數量即可。</p>
 </div>
 <div id="作業" class="section level2">
@@ -177,6 +178,6 @@ df4 &lt;- df3 %&gt;%
   ggplot() +
   geom_boxplot(mapping = aes(x = ___, y = ___, color = cty_hwy)) +
   facet_wrap(~___, ncol = ___)</code></pre>
-<p><img src="/post/20191108/TA_class_1114_files/figure-html/unnamed-chunk-16-1.png" width="672" /></p>
+<p><img src="/r-statistics/post/20191108/TA_class_1114_files/figure-html/unnamed-chunk-16-1.png" width="672" /></p>
 </div>
 </div>

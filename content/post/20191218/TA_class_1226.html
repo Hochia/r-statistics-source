@@ -11,6 +11,7 @@ categories: ["R"]
 tags: ["R Markdown", "tidyverse"]
 ---
 
+<script src="/r-statistics/rmarkdown-libs/header-attrs/header-attrs.js"></script>
 
 
 <div id="預備" class="section level2">
@@ -84,17 +85,17 @@ data</code></pre>
 <pre class="r"><code>data2 %&gt;%
   ggplot(aes(road, driver)) + 
   geom_point(aes(size = frequency))</code></pre>
-<p><img src="/post/20191218/TA_class_1226_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
+<p><img src="/r-statistics/post/20191218/TA_class_1226_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
 <p>以次數的方式堆疊。</p>
 <pre class="r"><code>data2 %&gt;%
   ggplot(aes(driver, frequency)) + 
   geom_col(aes(fill = road))</code></pre>
-<p><img src="/post/20191218/TA_class_1226_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
+<p><img src="/r-statistics/post/20191218/TA_class_1226_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
 <p>轉換成百分比的形式堆疊，</p>
 <pre class="r"><code>data2 %&gt;%
   ggplot(aes(driver, frequency)) + 
   geom_col(aes(fill = road), position = &quot;fill&quot;)</code></pre>
-<p><img src="/post/20191218/TA_class_1226_files/figure-html/unnamed-chunk-9-1.png" width="672" /></p>
+<p><img src="/r-statistics/post/20191218/TA_class_1226_files/figure-html/unnamed-chunk-9-1.png" width="672" /></p>
 <p>當然我們可以再加入更多的程式碼美化圖片，但在這之前，先練好基本型。</p>
 <p>列聯表行列變數的獨立性檢定如下:</p>
 <pre class="r"><code>data2 &lt;- data[,2:5]
@@ -120,7 +121,8 @@ data.chisq$residuals</code></pre>
 <pre class="r"><code>ggplot(mpg, aes(cty, hwy)) +
   geom_point() +
   geom_smooth(method = &quot;lm&quot;, level = 0.99)</code></pre>
-<p><img src="/post/20191218/TA_class_1226_files/figure-html/unnamed-chunk-12-1.png" width="672" /></p>
+<pre><code>#&gt; `geom_smooth()` using formula &#39;y ~ x&#39;</code></pre>
+<p><img src="/r-statistics/post/20191218/TA_class_1226_files/figure-html/unnamed-chunk-12-1.png" width="672" /></p>
 <p><code>geom_smooth()</code> 設定 <code>method</code> 為線性模型 <code>lm</code>，<code>level</code> 設定信賴區間的水準。如果不顯示信賴區間，設定 <code>se = FALSE</code>。</p>
 <p>迴歸的程式碼如下，以 <code>lm()</code> 搭配 <code>summary()</code> 函數。</p>
 <pre class="r"><code>model &lt;- lm(hwy ~ cty, mpg)
